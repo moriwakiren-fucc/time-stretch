@@ -433,30 +433,38 @@
 
             const reader = new FileReader();
             
+            uploadProgress.classList.add('show');
+            uploadProgressFill.style.width = '0%';
+            uploadProgressText.textContent = 'ファイル読み込み中... 0%';
+
             reader.onprogress = (e) => {
                 if (e.lengthComputable) {
-                    const percentComplete = Math.round((e.loaded / e.total) * 100);
-                    uploadProgressFill.style.width = percentComplete + '%';
-                    uploadProgressText.textContent = percentComplete + '%';
-                    uploadProgress.classList.add('show');
+                    const pct = Math.round((e.loaded / e.total) * 90);
+                    uploadProgressFill.style.width = pct + '%';
+                    uploadProgressText.textContent = `ファイル読み込み中... ${pct}%`;
                 }
             };
 
             reader.onload = (e) => {
+                uploadProgressFill.style.width = '90%';
+                uploadProgressText.textContent = '動画を解析中...';
+
                 const video = document.getElementById('videoPreview');
                 video.src = e.target.result;
 
                 video.addEventListener('loadedmetadata', () => {
+                    uploadProgressFill.style.width = '100%';
+                    uploadProgressText.textContent = '完了！';
+
                     originalDuration = Math.round(video.duration * 100) / 100;
                     document.getElementById('duration').textContent = formatSeconds(originalDuration);
                     fileInfo.classList.add('show');
                     targetTimeSection.style.display = 'block';
                     video.classList.add('show');
-                    
-                    // アップロード完了後、プログレスバーを隠す
+
                     setTimeout(() => {
                         uploadProgress.classList.remove('show');
-                    }, 500);
+                    }, 600);
                     clearError();
                 });
             };
