@@ -278,6 +278,37 @@
             display: block;
         }
 
+        .upload-progress {
+            display: none;
+            margin-top: 16px;
+        }
+
+        .upload-progress.show {
+            display: block;
+        }
+
+        .upload-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .upload-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        .upload-progress-text {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 24px;
@@ -303,6 +334,12 @@
                 <div class="upload-icon">📹</div>
                 <div class="upload-text">動画ファイルをドラッグ&ドロップ</div>
                 <div style="color: #999; font-size: 12px; margin-top: 8px;">または、クリックして選択</div>
+            </div>
+            <div class="upload-progress" id="uploadProgress">
+                <div class="upload-progress-bar">
+                    <div class="upload-progress-fill" id="uploadProgressFill"></div>
+                </div>
+                <div class="upload-progress-text" id="uploadProgressText">0%</div>
             </div>
             <div class="file-info" id="fileInfo">
                 <p><strong>ファイル名:</strong> <span id="fileName"></span></p>
@@ -390,7 +427,21 @@
             uploadedVideo = file;
             document.getElementById('fileName').textContent = file.name;
 
+            const uploadProgress = document.getElementById('uploadProgress');
+            const uploadProgressFill = document.getElementById('uploadProgressFill');
+            const uploadProgressText = document.getElementById('uploadProgressText');
+
             const reader = new FileReader();
+            
+            reader.onprogress = (e) => {
+                if (e.lengthComputable) {
+                    const percentComplete = Math.round((e.loaded / e.total) * 100);
+                    uploadProgressFill.style.width = percentComplete + '%';
+                    uploadProgressText.textContent = percentComplete + '%';
+                    uploadProgress.classList.add('show');
+                }
+            };
+
             reader.onload = (e) => {
                 const video = document.getElementById('videoPreview');
                 video.src = e.target.result;
@@ -401,9 +452,20 @@
                     fileInfo.classList.add('show');
                     targetTimeSection.style.display = 'block';
                     video.classList.add('show');
+                    
+                    // アップロード完了後、プログレスバーを隠す
+                    setTimeout(() => {
+                        uploadProgress.classList.remove('show');
+                    }, 500);
                     clearError();
                 });
             };
+
+            reader.onerror = () => {
+                showError('ファイルの読み込みに失敗しました');
+                uploadProgress.classList.remove('show');
+            };
+
             reader.readAsArrayBuffer(file);
         }
 
