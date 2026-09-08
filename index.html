@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>動画速度変換ツール</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
@@ -24,22 +20,15 @@
         .container {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             padding: 40px;
             max-width: 600px;
             width: 100%;
         }
 
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 28px;
-        }
+        h1 { color: #333; margin-bottom: 30px; text-align: center; font-size: 28px; }
 
-        .section {
-            margin-bottom: 30px;
-        }
+        .section { margin-bottom: 30px; }
 
         .section-title {
             color: #555;
@@ -60,32 +49,37 @@
             background: #f8f9ff;
         }
 
-        .upload-area:hover {
-            border-color: #764ba2;
-            background: #f0f2ff;
+        .upload-area:hover { border-color: #764ba2; background: #f0f2ff; }
+        .upload-area.dragover { border-color: #764ba2; background: #e8ebff; transform: scale(1.02); }
+
+        #videoInput { display: none; }
+
+        .upload-icon { font-size: 36px; margin-bottom: 12px; }
+        .upload-text { color: #667eea; font-size: 14px; font-weight: 500; }
+
+        /* アップロードプログレスバー */
+        .upload-progress { display: none; margin-top: 16px; }
+        .upload-progress.show { display: block; }
+
+        .upload-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
         }
 
-        .upload-area.dragover {
-            border-color: #764ba2;
-            background: #e8ebff;
-            transform: scale(1.02);
+        .upload-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.2s ease;
         }
 
-        #videoInput {
-            display: none;
-        }
+        .upload-progress-text { font-size: 12px; color: #666; text-align: center; }
 
-        .upload-icon {
-            font-size: 36px;
-            margin-bottom: 12px;
-        }
-
-        .upload-text {
-            color: #667eea;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
+        /* ファイル情報 */
         .file-info {
             background: #f0f2ff;
             border-radius: 12px;
@@ -93,49 +87,32 @@
             margin-top: 16px;
             display: none;
         }
+        .file-info.show { display: block; }
+        .file-info p { color: #555; font-size: 13px; margin: 8px 0; }
+        .file-info strong { color: #333; }
 
-        .file-info.show {
-            display: block;
+        video {
+            margin-top: 12px;
+            display: none;
+            max-width: 100%;
+            border-radius: 8px;
         }
+        video.show { display: block; }
 
-        .file-info p {
-            color: #555;
-            font-size: 13px;
-            margin: 8px 0;
-        }
+        label { display: block; color: #555; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
 
-        .file-info strong {
-            color: #333;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            color: #555;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        input[type="number"],
-        input[type="text"] {
+        input[type="number"] {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             transition: border-color 0.3s ease;
         }
-
-        input[type="number"]:focus,
-        input[type="text"]:focus {
+        input[type="number"]:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
         }
 
         .info-box {
@@ -156,28 +133,11 @@
             margin-bottom: 16px;
             display: none;
         }
+        .result-box.show { display: block; }
+        .result-box p { color: #555; font-size: 13px; margin: 8px 0; }
+        .result-box strong { color: #10b981; font-size: 15px; }
 
-        .result-box.show {
-            display: block;
-        }
-
-        .result-box p {
-            color: #555;
-            font-size: 13px;
-            margin: 8px 0;
-        }
-
-        .result-box strong {
-            color: #10b981;
-            font-size: 15px;
-        }
-
-        .button-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 24px;
-        }
+        .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
 
         button {
             padding: 14px;
@@ -191,45 +151,16 @@
             letter-spacing: 0.5px;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102,126,234,0.3); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
+        .btn-secondary { background: #f0f2ff; color: #667eea; border: 2px solid #667eea; }
+        .btn-secondary:hover:not(:disabled) { background: #667eea; color: white; }
+        .btn-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: #f0f2ff;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-secondary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .progress-container {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .progress-container.show {
-            display: block;
-        }
+        .progress-container { display: none; margin-top: 20px; }
+        .progress-container.show { display: block; }
 
         .progress-bar {
             width: 100%;
@@ -247,11 +178,7 @@
             transition: width 0.3s ease;
         }
 
-        .progress-text {
-            font-size: 13px;
-            color: #666;
-            text-align: center;
-        }
+        .progress-text { font-size: 13px; color: #666; text-align: center; }
 
         .error-box {
             background: #fee;
@@ -263,64 +190,12 @@
             margin-bottom: 16px;
             display: none;
         }
-
-        .error-box.show {
-            display: block;
-        }
-
-        .video-preview {
-            margin-top: 12px;
-            display: none;
-            max-width: 100%;
-        }
-
-        .video-preview.show {
-            display: block;
-        }
-
-        .upload-progress {
-            display: none;
-            margin-top: 16px;
-        }
-
-        .upload-progress.show {
-            display: block;
-        }
-
-        .upload-progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-
-        .upload-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.2s ease;
-        }
-
-        .upload-progress-text {
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }
+        .error-box.show { display: block; }
 
         @media (max-width: 600px) {
-            .container {
-                padding: 24px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .button-group {
-                grid-template-columns: 1fr;
-            }
+            .container { padding: 24px; }
+            h1 { font-size: 24px; }
+            .button-group { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -333,28 +208,28 @@
             <div class="upload-area" id="uploadArea">
                 <div class="upload-icon">📹</div>
                 <div class="upload-text">動画ファイルをドラッグ&ドロップ</div>
-                <div style="color: #999; font-size: 12px; margin-top: 8px;">または、クリックして選択</div>
+                <div style="color:#999;font-size:12px;margin-top:8px;">または、クリックして選択</div>
             </div>
+            <input type="file" id="videoInput" accept="video/*">
+
             <div class="upload-progress" id="uploadProgress">
                 <div class="upload-progress-bar">
                     <div class="upload-progress-fill" id="uploadProgressFill"></div>
                 </div>
-                <div class="upload-progress-text" id="uploadProgressText">0%</div>
+                <div class="upload-progress-text" id="uploadProgressText"></div>
             </div>
+
             <div class="file-info" id="fileInfo">
                 <p><strong>ファイル名:</strong> <span id="fileName"></span></p>
                 <p><strong>再生時間:</strong> <span id="duration"></span></p>
-                <video id="videoPreview" class="video-preview" controls width="100%"></video>
+                <video id="videoPreview" controls width="100%"></video>
             </div>
-            <input type="file" id="videoInput" accept="video/*">
         </div>
 
-        <div class="section" id="targetTimeSection" style="display: none;">
+        <div class="section" id="targetTimeSection" style="display:none;">
             <div class="section-title">ステップ2：目標の再生時間を入力</div>
-            <div class="info-box">
-                元の動画の再生時間に対して、希望する目標時間を秒単位で入力してください。
-            </div>
-            <div class="input-group">
+            <div class="info-box">元の動画の再生時間に対して、希望する目標時間を秒単位で入力してください。</div>
+            <div style="margin-bottom:20px;">
                 <label for="targetTime">目標の再生時間（秒）</label>
                 <input type="number" id="targetTime" placeholder="例：30" step="0.1" min="1">
             </div>
@@ -382,40 +257,32 @@
     </div>
 
     <script>
-        let uploadedVideo = null;
+        let uploadedFile = null;
         let originalDuration = 0;
         let targetDuration = 0;
 
-        // Upload area functionality
-        const uploadArea = document.getElementById('uploadArea');
-        const videoInput = document.getElementById('videoInput');
-        const fileInfo = document.getElementById('fileInfo');
-        const targetTimeSection = document.getElementById('targetTimeSection');
-        const convertBtn = document.getElementById('convertBtn');
-        const resultBox = document.getElementById('resultBox');
-        const errorBox = document.getElementById('errorBox');
+        const uploadArea    = document.getElementById('uploadArea');
+        const videoInput    = document.getElementById('videoInput');
+        const fileInfo      = document.getElementById('fileInfo');
+        const targetSection = document.getElementById('targetTimeSection');
+        const convertBtn    = document.getElementById('convertBtn');
+        const resultBox     = document.getElementById('resultBox');
+        const errorBox      = document.getElementById('errorBox');
+        const uploadProgress     = document.getElementById('uploadProgress');
+        const uploadProgressFill = document.getElementById('uploadProgressFill');
+        const uploadProgressText = document.getElementById('uploadProgressText');
+        const videoPreview  = document.getElementById('videoPreview');
 
         uploadArea.addEventListener('click', () => videoInput.click());
-
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
+        uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+        uploadArea.addEventListener('drop', e => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
-            handleVideoUpload(e.dataTransfer.files[0]);
+            if (e.dataTransfer.files[0]) handleVideoUpload(e.dataTransfer.files[0]);
         });
-
-        videoInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleVideoUpload(e.target.files[0]);
-            }
+        videoInput.addEventListener('change', e => {
+            if (e.target.files[0]) handleVideoUpload(e.target.files[0]);
         });
 
         function handleVideoUpload(file) {
@@ -424,60 +291,65 @@
                 return;
             }
 
-            uploadedVideo = file;
+            uploadedFile = file;
             document.getElementById('fileName').textContent = file.name;
 
-            const uploadProgress = document.getElementById('uploadProgress');
-            const uploadProgressFill = document.getElementById('uploadProgressFill');
-            const uploadProgressText = document.getElementById('uploadProgressText');
-
-            const reader = new FileReader();
-            
-            uploadProgress.classList.add('show');
+            // プログレスバーを初期化して表示
             uploadProgressFill.style.width = '0%';
-            uploadProgressText.textContent = 'ファイル読み込み中... 0%';
+            uploadProgressText.textContent = '動画を読み込み中...';
+            uploadProgress.classList.add('show');
 
-            reader.onprogress = (e) => {
-                if (e.lengthComputable) {
-                    const pct = Math.round((e.loaded / e.total) * 90);
-                    uploadProgressFill.style.width = pct + '%';
-                    uploadProgressText.textContent = `ファイル読み込み中... ${pct}%`;
-                }
-            };
+            // ObjectURL を作ってそのまま video に渡す（readAsArrayBuffer 不要）
+            const objectUrl = URL.createObjectURL(file);
+            videoPreview.src = objectUrl;
 
-            reader.onload = (e) => {
-                uploadProgressFill.style.width = '90%';
-                uploadProgressText.textContent = '動画を解析中...';
-
-                const video = document.getElementById('videoPreview');
-                video.src = e.target.result;
-
-                video.addEventListener('loadedmetadata', () => {
-                    uploadProgressFill.style.width = '100%';
-                    uploadProgressText.textContent = '完了！';
-
-                    originalDuration = Math.round(video.duration * 100) / 100;
-                    document.getElementById('duration').textContent = formatSeconds(originalDuration);
-                    fileInfo.classList.add('show');
-                    targetTimeSection.style.display = 'block';
-                    video.classList.add('show');
-
-                    setTimeout(() => {
-                        uploadProgress.classList.remove('show');
-                    }, 600);
-                    clearError();
-                });
-            };
-
-            reader.onerror = () => {
-                showError('ファイルの読み込みに失敗しました');
-                uploadProgress.classList.remove('show');
-            };
-
-            reader.readAsArrayBuffer(file);
+            // video のバッファリング進捗を追う
+            videoPreview.addEventListener('progress', onVideoProgress);
+            videoPreview.addEventListener('loadedmetadata', onMetadataLoaded);
+            videoPreview.addEventListener('error', onVideoError);
+            videoPreview.load();
         }
 
-        document.getElementById('targetTime').addEventListener('input', (e) => {
+        function onVideoProgress() {
+            // buffered が 1 セグメント以上あれば進捗を取れる
+            if (videoPreview.buffered.length > 0 && videoPreview.duration) {
+                const pct = Math.min(
+                    Math.round((videoPreview.buffered.end(videoPreview.buffered.length - 1) / videoPreview.duration) * 90),
+                    90
+                );
+                uploadProgressFill.style.width = pct + '%';
+                uploadProgressText.textContent = `読み込み中... ${pct}%`;
+            }
+        }
+
+        function onMetadataLoaded() {
+            videoPreview.removeEventListener('progress', onVideoProgress);
+            videoPreview.removeEventListener('loadedmetadata', onMetadataLoaded);
+            videoPreview.removeEventListener('error', onVideoError);
+
+            uploadProgressFill.style.width = '100%';
+            uploadProgressText.textContent = '読み込み完了！';
+
+            originalDuration = Math.round(videoPreview.duration * 100) / 100;
+            document.getElementById('duration').textContent = formatSeconds(originalDuration);
+
+            fileInfo.classList.add('show');
+            videoPreview.classList.add('show');
+            targetSection.style.display = 'block';
+            clearError();
+
+            setTimeout(() => uploadProgress.classList.remove('show'), 800);
+        }
+
+        function onVideoError() {
+            videoPreview.removeEventListener('progress', onVideoProgress);
+            videoPreview.removeEventListener('loadedmetadata', onMetadataLoaded);
+            videoPreview.removeEventListener('error', onVideoError);
+            uploadProgress.classList.remove('show');
+            showError('動画の読み込みに失敗しました。対応フォーマットか確認してください。');
+        }
+
+        document.getElementById('targetTime').addEventListener('input', e => {
             const target = parseFloat(e.target.value);
             clearError();
 
@@ -488,154 +360,151 @@
             }
 
             targetDuration = target;
-            const multiplier = Math.round((originalDuration / target) * 100) / 100;
+            const multiplier = originalDuration / target;
 
             document.getElementById('speedMultiplier').textContent = multiplier.toFixed(2);
             document.getElementById('targetTimeDisplay').textContent = formatSeconds(target);
             resultBox.classList.add('show');
-
             convertBtn.disabled = false;
         });
 
-        function formatSeconds(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.round((seconds % 60) * 100) / 100;
-            return mins > 0 ? `${mins}分${secs}秒` : `${secs}秒`;
+        function formatSeconds(s) {
+            const m = Math.floor(s / 60);
+            const sec = (s % 60).toFixed(2);
+            return m > 0 ? `${m}分${sec}秒` : `${sec}秒`;
         }
 
-        function showError(message) {
-            errorBox.textContent = message;
-            errorBox.classList.add('show');
-        }
-
-        function clearError() {
-            errorBox.classList.remove('show');
-        }
+        function showError(msg) { errorBox.textContent = msg; errorBox.classList.add('show'); }
+        function clearError()  { errorBox.classList.remove('show'); }
 
         function resetApp() {
-            uploadedVideo = null;
+            uploadedFile = null;
             originalDuration = 0;
             targetDuration = 0;
             videoInput.value = '';
             fileInfo.classList.remove('show');
-            targetTimeSection.style.display = 'none';
+            targetSection.style.display = 'none';
             document.getElementById('targetTime').value = '';
             resultBox.classList.remove('show');
-            document.getElementById('videoPreview').src = '';
+            videoPreview.src = '';
+            videoPreview.classList.remove('show');
+            uploadProgress.classList.remove('show');
+            document.getElementById('progressContainer').classList.remove('show');
+            convertBtn.disabled = true;
             clearError();
         }
 
+        // ---- FFmpeg.wasm (v0.11.x / unpkg, SharedArrayBuffer 不要版) ----
+        let ffmpegLoaded = false;
+        let ffmpegInstance = null;
+
+        async function loadFFmpeg() {
+            if (ffmpegLoaded) return;
+
+            await new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
+                s.onload  = resolve;
+                s.onerror = () => reject(new Error('FFmpegスクリプトの読み込みに失敗しました'));
+                document.head.appendChild(s);
+            });
+
+            const { createFFmpeg } = window.FFmpeg;
+            ffmpegInstance = createFFmpeg({ log: false });
+            await ffmpegInstance.load();
+            ffmpegLoaded = true;
+        }
+
         async function startConversion() {
-            if (!uploadedVideo || !targetDuration) {
+            if (!uploadedFile || !targetDuration) {
                 showError('動画を選択し、目標時間を入力してください');
                 return;
             }
 
             const multiplier = originalDuration / targetDuration;
+
+            // atempo は 0.5〜2.0 の範囲しか受け付けないため、範囲外は連鎖させる
+            function buildAtempoFilter(rate) {
+                const filters = [];
+                let r = rate;
+                while (r > 2.0)  { filters.push('atempo=2.0'); r /= 2.0; }
+                while (r < 0.5)  { filters.push('atempo=0.5'); r /= 0.5; }
+                filters.push(`atempo=${r.toFixed(6)}`);
+                return filters.join(',');
+            }
+
             convertBtn.disabled = true;
+            clearError();
 
             try {
-                showProgress('FFmpeg を読み込み中...');
-
-                // FFmpeg.wasm のスクリプトを動的に読み込み
+                setProgress('FFmpegを読み込み中...', 5);
                 await loadFFmpeg();
+                setProgress('動画データを準備中...', 20);
 
-                showProgress('動画を処理中...');
+                const arrayBuffer = await uploadedFile.arrayBuffer();
+                const inputData   = new Uint8Array(arrayBuffer);
 
-                const arrayBuffer = await uploadedVideo.arrayBuffer();
-                const inputFileName = 'input.mp4';
-                const outputFileName = 'output.mp4';
+                const ext = uploadedFile.name.split('.').pop().toLowerCase() || 'mp4';
+                const inputName  = `input.${ext}`;
+                const outputName = 'output.mp4';
 
-                // ファイルをFFmpeg仮想ファイルシステムに書き込み
-                const inputData = new Uint8Array(arrayBuffer);
-                FFmpeg.FS('writeFile', inputFileName, inputData);
+                ffmpegInstance.FS('writeFile', inputName, inputData);
+                setProgress('エンコード中...', 40);
 
-                // atempo フィルターで速度変更（タイムストレッチ）
-                // multiplier が 2.0 の場合、2倍速（半分の時間）
-                const command = [
-                    '-i', inputFileName,
-                    '-filter:a', `atempo=${multiplier}`,
-                    '-c:v', 'copy',
+                const atempoFilter = buildAtempoFilter(multiplier);
+
+                await ffmpegInstance.run(
+                    '-i', inputName,
+                    '-vf', `setpts=${(1 / multiplier).toFixed(6)}*PTS`,
+                    '-af', atempoFilter,
+                    '-c:v', 'libx264',
+                    '-preset', 'fast',
                     '-c:a', 'aac',
-                    outputFileName
-                ];
+                    outputName
+                );
 
-                showProgress('エンコード中...');
+                setProgress('ファイルを書き出し中...', 90);
 
-                await FFmpeg.run(...command);
+                const data = ffmpegInstance.FS('readFile', outputName);
 
-                // 出力ファイルを読み込み
-                const data = FFmpeg.FS('readFile', outputFileName);
+                // 後片付け
+                ffmpegInstance.FS('unlink', inputName);
+                ffmpegInstance.FS('unlink', outputName);
 
-                // ダウンロード
-                const baseName = uploadedVideo.name.replace(/\.[^/.]+$/, '');
-                const newFileName = `${baseName}_fast.mp4`;
+                const baseName   = uploadedFile.name.replace(/\.[^/.]+$/, '');
+                const outputBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                downloadBlob(outputBlob, `${baseName}_fast.mp4`);
 
-                const blob = new Blob([data.buffer], { type: 'video/mp4' });
-                downloadFile(blob, newFileName);
-
-                showProgress('完了！', 100);
+                setProgress('完了！', 100);
                 setTimeout(() => {
                     document.getElementById('progressContainer').classList.remove('show');
-                    resetApp();
+                    convertBtn.disabled = false;
                 }, 1500);
 
-            } catch (error) {
-                console.error('変換エラー:', error);
-                showError('変換処理でエラーが発生しました: ' + error.message);
-            } finally {
+            } catch (err) {
+                console.error(err);
+                showError('変換中にエラーが発生しました: ' + err.message);
+                document.getElementById('progressContainer').classList.remove('show');
                 convertBtn.disabled = false;
             }
         }
 
-        async function loadFFmpeg() {
-            if (window.FFmpeg && window.FFmpeg.FFmpeg) {
-                const { FFmpeg, fetchFile } = FFmpeg;
-                if (!window.ffmpegInstance) {
-                    window.ffmpegInstance = new FFmpeg.FFmpeg({ log: true });
-                    await window.ffmpegInstance.load();
-                }
-                window.FFmpeg = window.ffmpegInstance;
-                return;
-            }
-
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js';
-                script.onload = async () => {
-                    const { FFmpeg, fetchFile } = FFmpeg;
-                    const ffmpeg = new FFmpeg.FFmpeg({ log: true });
-                    await ffmpeg.load();
-                    window.FFmpeg = ffmpeg;
-                    resolve();
-                };
-                script.onerror = () => reject(new Error('FFmpeg の読み込みに失敗しました'));
-                document.head.appendChild(script);
-            });
-        }
-
-        function showProgress(text, progress = null) {
+        function setProgress(text, pct) {
             const container = document.getElementById('progressContainer');
-            const progressText = document.getElementById('progressText');
-            const progressFill = document.getElementById('progressFill');
-
-            progressText.textContent = text;
+            document.getElementById('progressText').textContent = text;
+            document.getElementById('progressFill').style.width  = pct + '%';
             container.classList.add('show');
-
-            if (progress !== null) {
-                progressFill.style.width = progress + '%';
-            }
         }
 
-        function downloadFile(blob, filename) {
-            const url = URL.createObjectURL(blob);
+        function downloadBlob(blob, filename) {
+            const url  = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href = url;
+            link.href     = url;
             link.download = filename;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
     </script>
 </body>
