@@ -49,7 +49,6 @@
   .radio-group input[type="radio"] { display: none; }
   .radio-group label:has(input:checked) { border-color: var(--accent); background: rgba(124,109,250,0.12); color: var(--accent); }
 
-  /* Button row */
   .btn-row { display: flex; gap: 12px; align-items: center; }
   .run-btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 13px 28px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
   .run-btn:hover:not(:disabled) { opacity: 0.88; }
@@ -73,12 +72,28 @@
   .result-stats { font-size: 0.85rem; color: var(--text-dim); }
   .result-stats strong { color: var(--text); }
   .thumb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+
+  /* still thumbnail — no interaction */
   .thumb-item { position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 4px; overflow: hidden; }
   .thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .thumb-item .thumb-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); font-family: var(--mono); font-size: 0.6rem; color: #ccc; padding: 2px 5px; }
   .thumb-item .thumb-badge { position: absolute; top: 4px; right: 4px; font-size: 0.55rem; font-weight: 600; padding: 1px 5px; border-radius: 2px; letter-spacing: 0.04em; text-transform: uppercase; }
   .badge-still { background: var(--accent-dim); color: var(--accent); }
   .badge-video { background: rgba(80,80,80,0.8); color: #aaa; }
+
+  /* video thumbnail — clickable, opens modal */
+  .thumb-item.video-thumb {
+    cursor: pointer;
+    border: 2.5px solid #e8a020;
+    box-shadow: 0 0 0 1px rgba(232,160,32,0.25);
+    border-radius: 5px;
+  }
+  .thumb-item.video-thumb:hover { border-color: #f0b830; box-shadow: 0 0 10px rgba(232,160,32,0.45); }
+  .thumb-item.video-thumb .video-edit-hint {
+    position: absolute; inset: 0; background: rgba(0,0,0,0); display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0); transition: background 0.15s, color 0.15s;
+  }
+  .thumb-item.video-thumb:hover .video-edit-hint { background: rgba(0,0,0,0.45); color: #fff; }
 
   .dl-btn { background: var(--success); color: #fff; border: none; border-radius: var(--radius); padding: 12px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; align-self: flex-start; }
   .dl-btn:hover:not(:disabled) { opacity: 0.88; }
@@ -87,55 +102,89 @@
   .error-box { display: none; background: rgba(224,92,92,0.1); border: 1px solid var(--danger); border-radius: var(--radius); padding: 14px 18px; font-size: 0.85rem; color: var(--danger); line-height: 1.5; }
   .error-box.visible { display: block; }
 
-  /* Mode tabs */
-  .mode-tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; }
-  .mode-tab { flex: 1; text-align: center; padding: 10px 14px; border-radius: 4px; font-size: 0.88rem; font-weight: 600; color: var(--text-dim); cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: transparent; }
-  .mode-tab.active { background: var(--accent-dim); color: var(--accent); }
-  .mode-section { display: none; flex-direction: column; gap: 20px; }
-  .mode-section.active { display: flex; }
-
-  /* Manual frame picker */
-  .manual-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .manual-controls .setting-control { gap: 10px; }
-  .gen-btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 11px 22px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
-  .gen-btn:hover:not(:disabled) { opacity: 0.88; }
-  .gen-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-  .manual-toolbar { display: none; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-dim); }
-  .manual-toolbar.visible { display: flex; }
-  .manual-toolbar .sel-count { color: var(--text); font-family: var(--mono); }
-  .manual-toolbar .sel-count strong { color: var(--accent); }
-  .toolbar-actions { display: flex; gap: 8px; }
-  .toolbar-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 4px; padding: 6px 12px; font-size: 0.78rem; cursor: pointer; transition: border-color 0.12s, color 0.12s; }
-  .toolbar-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  .frame-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-  .frame-grid.visible { display: grid; }
-  .frame-item { position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 5px; overflow: hidden; cursor: pointer; border: 3px solid transparent; transition: border-color 0.12s, transform 0.08s, box-shadow 0.12s; }
-  .frame-item:hover { border-color: rgba(124,109,250,0.5); }
-  .frame-item.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(124,109,250,0.35), 0 4px 14px rgba(124,109,250,0.35); transform: scale(0.98); }
-  .frame-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-  .frame-item .frame-time { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); font-family: var(--mono); font-size: 0.62rem; color: #ddd; padding: 3px 6px; pointer-events: none; }
-  .frame-item .frame-check { position: absolute; top: 5px; right: 5px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 700; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
-  .frame-item.selected .frame-check { display: flex; }
-  .frame-item.selected::after { content: ''; position: absolute; inset: 0; background: rgba(124,109,250,0.12); pointer-events: none; }
-  .frame-item .frame-number { position: absolute; top: 5px; left: 5px; font-family: var(--mono); font-size: 0.6rem; color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.5); padding: 1px 5px; border-radius: 3px; pointer-events: none; }
-
-  .manual-empty { font-size: 0.85rem; color: var(--text-dim); text-align: center; padding: 24px 0; }
+  /* ===== Frame-picker modal ===== */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    z-index: 1000; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    width: 100%; max-width: 700px; max-height: 90vh; display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0;
+  }
+  .modal-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .modal-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 3px; }
+  .modal-close {
+    background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+    border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+  .modal-frame-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px;
+  }
+  .modal-frame-item {
+    position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 4px;
+    overflow: hidden; cursor: pointer;
+    border: 3px solid transparent;
+    transition: border-color 0.1s, box-shadow 0.1s, transform 0.08s;
+  }
+  .modal-frame-item:hover { border-color: rgba(124,109,250,0.5); }
+  .modal-frame-item.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(124,109,250,0.35), 0 4px 14px rgba(124,109,250,0.3);
+    transform: scale(0.97);
+  }
+  .modal-frame-item.selected::after {
+    content: ''; position: absolute; inset: 0; background: rgba(124,109,250,0.1); pointer-events: none;
+  }
+  .modal-frame-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .modal-frame-item .mf-time {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.65); font-family: var(--mono); font-size: 0.6rem; color: #ccc; padding: 2px 5px;
+    pointer-events: none;
+  }
+  .modal-frame-item .mf-check {
+    position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 700;
+    display: none; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4); pointer-events: none;
+  }
+  .modal-frame-item.selected .mf-check { display: flex; }
+  .modal-footer {
+    padding: 14px 20px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; flex-wrap: wrap;
+  }
+  .modal-sel-info { font-size: 0.82rem; color: var(--text-dim); }
+  .modal-sel-info strong { color: var(--accent); font-family: var(--mono); }
+  .modal-actions { display: flex; gap: 8px; }
+  .modal-btn {
+    border: none; border-radius: var(--radius); padding: 10px 18px;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: opacity 0.12s;
+  }
+  .modal-btn:hover { opacity: 0.85; }
+  .modal-btn.primary { background: var(--accent); color: #fff; }
+  .modal-btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
+  .modal-btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-loading { padding: 32px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
 
   @media (max-width: 500px) {
     h1 { font-size: 1.3rem; }
     .setting-row { flex-direction: column; align-items: flex-start; gap: 8px; }
     input[type="range"] { width: 100%; }
-    .manual-controls { flex-direction: column; align-items: stretch; }
-    .manual-toolbar { flex-direction: column; align-items: stretch; }
+    .modal { max-height: 95vh; }
   }
 </style>
 </head>
 <body>
 <header>
   <h1>スライド<span>抽出</span></h1>
-  <p class="sub">動画内の静止画スライドを検出、または好きなフレームを手動で選んでJPEGで保存します。処理はすべてブラウザ内で完結します。</p>
+  <p class="sub">動画内の静止画スライドを1枚ずつ検出してJPEGで保存します。処理はすべてブラウザ内で完結します。</p>
 </header>
 <main>
   <div class="dropzone" id="dropzone">
@@ -145,13 +194,6 @@
     <div class="file-chosen" id="fileChosen"></div>
   </div>
 
-  <div class="mode-tabs">
-    <button class="mode-tab active" id="tabAuto" type="button">自動抽出</button>
-    <button class="mode-tab" id="tabManual" type="button">代表フレーム抽出（手動選択）</button>
-  </div>
-
-  <!-- ================= AUTO MODE ================= -->
-  <div class="mode-section active" id="sectionAuto">
   <div class="panel">
     <div class="panel-title">検出設定</div>
     <div class="setting-row">
@@ -192,7 +234,7 @@
       <div class="setting-control">
         <div class="radio-group">
           <label><input type="radio" name="videoMode" value="skip" checked>スキップ</label>
-          <label><input type="radio" name="videoMode" value="one">1枚抽出</label>
+          <label><input type="radio" name="videoMode" value="one">代表フレームを選択</label>
         </div>
       </div>
     </div>
@@ -216,48 +258,36 @@
     <div class="thumb-grid" id="thumbGrid"></div>
     <button class="dl-btn" id="dlBtn">ZIPでダウンロード</button>
   </div>
-  </div><!-- /sectionAuto -->
-
-  <!-- ================= MANUAL MODE ================= -->
-  <div class="mode-section" id="sectionManual">
-    <div class="panel">
-      <div class="panel-title">フレーム一覧の生成</div>
-      <div class="manual-controls">
-        <div class="setting-control">
-          <span class="setting-label" style="flex:none;">サムネイル間隔</span>
-          <input type="range" id="manualIntervalSlider" min="0.1" max="10" value="1" step="0.1" style="width:140px;">
-          <span class="range-val" id="manualIntervalVal">1.0秒</span>
-        </div>
-        <button class="gen-btn" id="genFramesBtn" disabled>フレーム一覧を生成</button>
-      </div>
-      <div class="setting-desc">指定した間隔で動画から静止画を切り出し、下に一覧表示します。気に入ったフレームをクリックして選択してください（複数選択可）。</div>
-    </div>
-
-    <div class="progress-box" id="manualProgressBox">
-      <div class="progress-status">サムネイル生成中… <strong id="manualProgressLabel">準備中</strong></div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="manualProgressFill"></div></div>
-    </div>
-
-    <div class="error-box" id="manualErrorBox"></div>
-
-    <div class="manual-toolbar" id="manualToolbar">
-      <div class="sel-count"><strong id="selCountNum">0</strong>枚 選択中 / 全<span id="totalFrameNum">0</span>枚</div>
-      <div class="toolbar-actions">
-        <button class="toolbar-btn" id="selectAllBtn" type="button">すべて選択</button>
-        <button class="toolbar-btn" id="clearSelBtn" type="button">選択解除</button>
-      </div>
-    </div>
-
-    <div class="frame-grid" id="frameGrid"></div>
-    <div class="manual-empty" id="manualEmpty">動画を選択し、「フレーム一覧を生成」を押してください。</div>
-
-    <button class="dl-btn" id="manualDlBtn" style="display:none;">選択したフレームをZIPでダウンロード</button>
-  </div>
-  <!-- /sectionManual -->
 </main>
+
+<!-- ===== Frame-picker modal ===== -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">代表フレームを選択</div>
+        <div class="modal-sub" id="modalSub"></div>
+      </div>
+      <button class="modal-close" id="modalClose">✕ 閉じる</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-loading" id="modalLoading">フレームを読み込み中…</div>
+      <div class="modal-frame-grid" id="modalFrameGrid"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-sel-info"><strong id="modalSelCount">0</strong> 枚選択中</div>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" id="modalSelectAll">すべて選択</button>
+        <button class="modal-btn secondary" id="modalClearSel">選択解除</button>
+        <button class="modal-btn primary" id="modalConfirm">この選択で確定</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
+// ---- DOM refs ----
 const dropzone      = document.getElementById('dropzone');
 const fileInput     = document.getElementById('fileInput');
 const fileChosen    = document.getElementById('fileChosen');
@@ -278,25 +308,20 @@ const minFramesSlider = document.getElementById('minFramesSlider');
 const minFramesVal    = document.getElementById('minFramesVal');
 const fpsSlider       = document.getElementById('fpsSlider');
 const fpsVal          = document.getElementById('fpsVal');
+const modalBackdrop   = document.getElementById('modalBackdrop');
+const modalTitle      = document.getElementById('modalTitle');
+const modalSub        = document.getElementById('modalSub');
+const modalClose      = document.getElementById('modalClose');
+const modalLoading    = document.getElementById('modalLoading');
+const modalFrameGrid  = document.getElementById('modalFrameGrid');
+const modalSelCount   = document.getElementById('modalSelCount');
+const modalSelectAll  = document.getElementById('modalSelectAll');
+const modalClearSel   = document.getElementById('modalClearSel');
+const modalConfirm    = document.getElementById('modalConfirm');
 
 threshSlider.addEventListener('input',    () => threshVal.textContent    = threshSlider.value);
 minFramesSlider.addEventListener('input', () => minFramesVal.textContent = minFramesSlider.value);
 fpsSlider.addEventListener('input',       () => fpsVal.textContent       = fpsSlider.value);
-
-// ---- Mode tabs ----
-const tabAuto        = document.getElementById('tabAuto');
-const tabManual       = document.getElementById('tabManual');
-const sectionAuto     = document.getElementById('sectionAuto');
-const sectionManual   = document.getElementById('sectionManual');
-tabAuto.addEventListener('click', () => switchMode('auto'));
-tabManual.addEventListener('click', () => switchMode('manual'));
-function switchMode(mode) {
-  const isAuto = mode === 'auto';
-  tabAuto.classList.toggle('active', isAuto);
-  tabManual.classList.toggle('active', !isAuto);
-  sectionAuto.classList.toggle('active', isAuto);
-  sectionManual.classList.toggle('active', !isAuto);
-}
 
 let selectedFile = null;
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
@@ -311,9 +336,7 @@ function setFile(f) {
   selectedFile = f;
   fileChosen.textContent = f.name + '  (' + (f.size / 1024 / 1024).toFixed(1) + ' MB)';
   runBtn.disabled = false;
-  genFramesBtn.disabled = false;
   hideAll();
-  resetManual();
 }
 
 function getSettings() {
@@ -338,11 +361,11 @@ function hideAll() {
   extractedBlobs = [];
 }
 
-// ---- Luma diff: compare two ImageData pixel-by-pixel (sampled) ----
+// ---- Luma diff ----
 function frameDiff(a, b) {
   const da = a.data, db = b.data, len = da.length;
   let sum = 0, count = 0;
-  for (let i = 0; i < len; i += 32) { // every 8th pixel
+  for (let i = 0; i < len; i += 32) {
     const la = 0.299*da[i] + 0.587*da[i+1] + 0.114*da[i+2];
     const lb = 0.299*db[i] + 0.587*db[i+1] + 0.114*db[i+2];
     sum += Math.abs(la - lb);
@@ -354,7 +377,6 @@ function frameDiff(a, b) {
 function seekAndCapture(video, canvas, ctx, time) {
   return new Promise((resolve, reject) => {
     const t = Math.max(0, Math.min(time, video.duration - 0.001));
-    // If already at that time (within 1ms), just capture
     if (Math.abs(video.currentTime - t) < 0.001) {
       try {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -388,7 +410,7 @@ function yieldFrame() { return new Promise(r => setTimeout(r, 0)); }
 
 let extractedBlobs = [];
 
-// ---- Abort controller ----
+// ---- Abort ----
 let abortRequested = false;
 abortBtn.addEventListener('click', () => {
   abortRequested = true;
@@ -396,6 +418,9 @@ abortBtn.addEventListener('click', () => {
   abortBtn.textContent = '中止中…';
 });
 
+// =====================================================================
+// Main extraction run
+// =====================================================================
 runBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
   hideAll();
@@ -451,88 +476,38 @@ runBtn.addEventListener('click', async () => {
     setProgress(5, 'フレーム解析中');
     resultBox.classList.add('visible');
 
-    // -----------------------------------------------------------------------
-    // Consecutive diff (frame[i] vs frame[i-1]) with hysteresis.
-    //
-    // State machine has two modes: STILL and VIDEO.
-    //
-    // In STILL mode:
-    //   - Each frame is compared to its predecessor.
-    //   - If diff < diffThresh  → still continues; reset spikeCount.
-    //   - If diff >= diffThresh → increment spikeCount.
-    //     Only when spikeCount >= HYSTERESIS do we actually end the still run.
-    //     The "spike" frames that didn't trigger are absorbed into the run
-    //     (they were noise). This prevents compression artifacts from splitting
-    //     a single slide into two.
-    //
-    // In VIDEO mode:
-    //   - Each frame is compared to its predecessor.
-    //   - If diff < diffThresh for HYSTERESIS consecutive frames → enter STILL.
-    //   - Otherwise accumulate into videoTimes.
-    //
-    // bestTime tracks the frame with smallest consecutive diff (most stable).
-    // -----------------------------------------------------------------------
-    const HYSTERESIS = 3; // frames that must agree before mode switches
+    const HYSTERESIS = 3;
 
     // STILL run state
-    let stillTimes  = [];      // timestamps in current still run
-    let bestDiff    = Infinity;
-    let bestTime    = 0;
-    let spikeCount  = 0;       // consecutive high-diff frames seen while in STILL
-    let spikeTimes  = [];      // those spike frame timestamps (pending re-evaluation)
+    let stillTimes = [];
+    let bestDiff   = Infinity;
+    let bestTime   = 0;
+    let spikeCount = 0;
+    let spikeTimes = [];
 
     // VIDEO run state
-    let videoTimes  = [];
-    let calmCount   = 0;       // consecutive low-diff frames seen while in VIDEO
-    let calmBuf     = [];      // those calm frame timestamps (pending re-evaluation)
+    let videoTimes = [];
+    let calmCount  = 0;
+    let calmBuf    = [];
 
-    let inStill     = false;   // current mode
-    let prevData    = null;    // previous frame ImageData
-    let prevDiff    = 0;
+    let inStill  = false;
+    let prevData = null;
 
     let slideCount    = 0;
     let videoSegCount = 0;
 
-    async function flushStillRun() {
-      if (stillTimes.length < minFrames) {
-        videoTimes.push(...stillTimes);
-      } else {
-        await seekAndCapture(video, canvas, ctx, bestTime);
-        outCtx.drawImage(video, 0, 0, W, H);
-        const blob = await canvasToBlob(outCanvas, 0.92);
-        slideCount++;
-        const num = String(slideCount).padStart(3, '0');
-        const filename = `slide_${num}_t${bestTime.toFixed(2)}s.jpg`;
-        extractedBlobs.push({ blob, filename, type: 'still' });
-        addThumb(canvas, CW, CH, 'still', bestTime);
-      }
-      stillTimes = []; bestDiff = Infinity; bestTime = 0;
-      spikeCount = 0;  spikeTimes = [];
-    }
+    // For "one" mode: collect all video-segment times so the user can pick frames later.
+    // videoSegStore[i] = { segIndex, times: number[] }
+    const videoSegStore = [];
 
-    async function flushVideoRun() {
-      if (videoTimes.length === 0) return;
-      videoSegCount++;
-      if (videoMode === 'one') {
-        const midTime = videoTimes[Math.floor(videoTimes.length / 2)];
-        await seekAndCapture(video, canvas, ctx, midTime);
-        outCtx.drawImage(video, 0, 0, W, H);
-        const blob = await canvasToBlob(outCanvas, 0.92);
-        const num = String(extractedBlobs.length + 1).padStart(3, '0');
-        const filename = `video_seg_${num}_t${midTime.toFixed(2)}s.jpg`;
-        extractedBlobs.push({ blob, filename, type: 'video' });
-        addThumb(canvas, CW, CH, 'video', midTime);
-      }
-      videoTimes = [];
-      calmCount = 0; calmBuf = [];
-    }
-
+    // ---- addThumb: returns the div so callers can attach data ----
     function addThumb(canvas, cw, ch, type, labelTime) {
       const tc = document.createElement('canvas');
       tc.width = cw; tc.height = ch;
       tc.getContext('2d').drawImage(canvas, 0, 0);
       const dataURL = tc.toDataURL('image/jpeg', 0.45);
       tc.width = 0; tc.height = 0;
+
       const div = document.createElement('div');
       div.className = 'thumb-item';
       const img = document.createElement('img');
@@ -545,6 +520,63 @@ runBtn.addEventListener('click', async () => {
       lbl.textContent = labelTime.toFixed(1) + 's';
       div.appendChild(img); div.appendChild(badge); div.appendChild(lbl);
       thumbGrid.appendChild(div);
+      return div;
+    }
+
+    async function flushStillRun() {
+      if (stillTimes.length < minFrames) {
+        // Too short — treat as video
+        videoTimes.push(...stillTimes);
+      } else {
+        // bestTime is guaranteed set whenever stillTimes is non-empty and length >= minFrames
+        await seekAndCapture(video, canvas, ctx, bestTime);
+        outCtx.drawImage(video, 0, 0, W, H);
+        const blob = await canvasToBlob(outCanvas, 0.92);
+        slideCount++;
+        const num = String(slideCount).padStart(3, '0');
+        const filename = `slide_${num}_t${bestTime.toFixed(2)}s.jpg`;
+        extractedBlobs.push({ blob, filename, type: 'still' });
+        addThumb(canvas, CW, CH, 'still', bestTime);
+      }
+      stillTimes = []; bestDiff = Infinity; bestTime = 0;
+      spikeCount = 0; spikeTimes = [];
+    }
+
+    async function flushVideoRun() {
+      if (videoTimes.length === 0) return;
+      videoSegCount++;
+
+      if (videoMode === 'one') {
+        // Store times for post-processing; show a placeholder thumb.
+        const midTime = videoTimes[Math.floor(videoTimes.length / 2)];
+        await seekAndCapture(video, canvas, ctx, midTime);
+        // Don't add to extractedBlobs yet — user will choose frames via modal.
+        const segIdx = videoSegCount;
+        const times  = [...videoTimes];
+        videoSegStore.push({ segIdx, times, thumbEls: [] });
+
+        // Placeholder thumb — clickable to open modal.
+        const thumbDiv = addThumb(canvas, CW, CH, 'video', midTime);
+        thumbDiv.classList.add('video-thumb');
+        const hint = document.createElement('div');
+        hint.className = 'video-edit-hint';
+        hint.textContent = 'タップして選択';
+        thumbDiv.appendChild(hint);
+
+        // Badge update: show "未選択"
+        const badge = thumbDiv.querySelector('.thumb-badge');
+        badge.textContent = '未選択';
+        badge.style.background = 'rgba(232,160,32,0.25)';
+        badge.style.color = '#e8a020';
+
+        const storeEntry = videoSegStore[videoSegStore.length - 1];
+        storeEntry.thumbEls.push(thumbDiv);  // initial placeholder
+
+        thumbDiv.addEventListener('click', () => openModal(storeEntry));
+      }
+
+      videoTimes = [];
+      calmCount = 0; calmBuf = [];
     }
 
     // ---- Main loop ----
@@ -563,13 +595,10 @@ runBtn.addEventListener('click', async () => {
       }
 
       if (isLast) {
-        // Flush remaining
         if (inStill) {
-          // Absorb any pending spikes back into still (they were noise at end)
           stillTimes.push(...spikeTimes);
           await flushStillRun();
         } else {
-          // Absorb calm buffer into video (not enough to confirm still)
           videoTimes.push(...calmBuf);
           await flushVideoRun();
         }
@@ -580,11 +609,11 @@ runBtn.addEventListener('click', async () => {
       const curData = await seekAndCapture(video, canvas, ctx, t);
 
       if (prevData === null) {
-        // Very first frame: enter STILL mode
-        prevData = curData;
-        inStill  = true;
+        prevData  = curData;
+        inStill   = true;
         stillTimes = [t];
-        bestDiff = 0; bestTime = t;
+        bestDiff  = 0;
+        bestTime  = t;   // ← always initialise bestTime on first frame
         continue;
       }
 
@@ -593,41 +622,33 @@ runBtn.addEventListener('click', async () => {
 
       if (inStill) {
         if (diff < diffThresh) {
-          // Low diff — noise spike (if any) was false alarm: absorb spikes into still
           stillTimes.push(...spikeTimes, t);
           spikeCount = 0; spikeTimes = [];
           if (diff < bestDiff) { bestDiff = diff; bestTime = t; }
         } else {
-          // High diff — potential scene change
           spikeCount++;
           spikeTimes.push(t);
           if (spikeCount >= HYSTERESIS) {
-            // Confirmed scene change: flush still, transition to VIDEO
-            // The spike frames belong to video, not still
-            await flushVideoRun(); // flush any prior video (shouldn't exist, but safe)
+            await flushVideoRun();
             await flushStillRun();
             inStill = false;
-            // spike frames become start of video run
             videoTimes.push(...spikeTimes);
             spikeCount = 0; spikeTimes = [];
           }
-          // else: wait and see (spike frames held in spikeTimes)
         }
       } else {
-        // VIDEO mode
         if (diff < diffThresh) {
           calmCount++;
           calmBuf.push(t);
           if (calmCount >= HYSTERESIS) {
-            // Confirmed still region: flush video, transition to STILL
             await flushVideoRun();
             inStill = true;
             stillTimes = [...calmBuf];
-            bestDiff = 0; bestTime = calmBuf[Math.floor(calmBuf.length / 2)];
+            bestDiff = 0;
+            bestTime = calmBuf[Math.floor(calmBuf.length / 2)]; // safe: calmBuf non-empty
             calmCount = 0; calmBuf = [];
           }
         } else {
-          // Still in video — absorb any calm buffer back into video (false alarm)
           videoTimes.push(...calmBuf, t);
           calmCount = 0; calmBuf = [];
         }
@@ -636,14 +657,8 @@ runBtn.addEventListener('click', async () => {
 
     if (!abortRequested) setProgress(100, '完了');
 
-    const sCount = extractedBlobs.filter(b => b.type === 'still').length;
-    const vCount = extractedBlobs.filter(b => b.type === 'video').length;
-    resultStats.innerHTML =
-      `<strong>${extractedBlobs.length}枚</strong> 抽出` +
-      (abortRequested ? '（中止）' : '完了') +
-      ` — スライド ${sCount}枚` +
-      (vCount > 0 ? `、ビデオ区間代表 ${vCount}枚` : '');
-    log(`スライド ${sCount}枚、ビデオ区間 ${videoSegCount}件`);
+    refreshResultStats();
+    log(`スライド ${slideCount}枚、ビデオ区間 ${videoSegCount}件`);
 
   } catch(e) {
     showError('エラー: ' + e.message);
@@ -657,6 +672,242 @@ runBtn.addEventListener('click', async () => {
     abortBtn.textContent = '中止';
   }
 });
+
+function refreshResultStats() {
+  const sCount = extractedBlobs.filter(b => b.type === 'still').length;
+  const vCount = extractedBlobs.filter(b => b.type === 'video').length;
+  resultStats.innerHTML =
+    `<strong>${extractedBlobs.length}枚</strong> 抽出完了` +
+    ` — スライド ${sCount}枚` +
+    (vCount > 0 ? `、ビデオ代表 ${vCount}枚` : '');
+}
+
+// =====================================================================
+// Modal: frame picker for a video segment
+// =====================================================================
+let modalCurrentSeg   = null;  // the videoSegStore entry being edited
+let modalSelectedTimes = new Set();  // times chosen in modal (pending)
+
+async function openModal(seg) {
+  modalCurrentSeg    = seg;
+  modalSelectedTimes = new Set(seg.chosenTimes || []);
+
+  modalTitle.textContent = `ビデオ区間 #${seg.segIdx} — 代表フレームを選択`;
+  const tStart = seg.times[0], tEnd = seg.times[seg.times.length - 1];
+  modalSub.textContent   = `${tStart.toFixed(1)}s 〜 ${tEnd.toFixed(1)}s（${seg.times.length} フレーム）`;
+
+  modalFrameGrid.innerHTML = '';
+  modalLoading.style.display = 'block';
+  modalBackdrop.classList.add('open');
+  updateModalSelCount();
+
+  // Open a fresh video for seeking inside the modal
+  const url = URL.createObjectURL(selectedFile);
+  const video = document.createElement('video');
+  video.src = url; video.muted = true; video.playsInline = true; video.preload = 'metadata';
+  await new Promise((res, rej) => {
+    video.addEventListener('loadedmetadata', res, { once: true });
+    video.addEventListener('error', () => rej(new Error('読み込み失敗')), { once: true });
+    video.load();
+  });
+
+  const W = video.videoWidth || 640, H = video.videoHeight || 360;
+  const SCALE = Math.min(1, 480 / W);
+  const CW = Math.round(W * SCALE), CH = Math.round(H * SCALE);
+  const canvas = document.createElement('canvas');
+  canvas.width = CW; canvas.height = CH;
+  const ctx = canvas.getContext('2d');
+
+  // Sample up to 30 frames for the modal grid
+  const MAX = 30;
+  let sampleTimes = seg.times;
+  if (sampleTimes.length > MAX) {
+    const step = sampleTimes.length / MAX;
+    sampleTimes = Array.from({ length: MAX }, (_, i) => seg.times[Math.round(i * step)]);
+  }
+
+  modalLoading.style.display = 'none';
+
+  for (const t of sampleTimes) {
+    if (!modalBackdrop.classList.contains('open')) break; // closed while loading
+    await seekAndCapture(video, canvas, ctx, t);
+    const dataURL = canvas.toDataURL('image/jpeg', 0.55);
+
+    const item = document.createElement('div');
+    item.className = 'modal-frame-item' + (modalSelectedTimes.has(t) ? ' selected' : '');
+    item.dataset.time = t;
+
+    const img = document.createElement('img');
+    img.src = dataURL;
+
+    const timeLbl = document.createElement('div');
+    timeLbl.className = 'mf-time';
+    timeLbl.textContent = t.toFixed(1) + 's';
+
+    const check = document.createElement('div');
+    check.className = 'mf-check';
+    check.textContent = '✓';
+
+    item.appendChild(img); item.appendChild(timeLbl); item.appendChild(check);
+    item.addEventListener('click', () => {
+      const tt = Number(item.dataset.time);
+      if (modalSelectedTimes.has(tt)) {
+        modalSelectedTimes.delete(tt);
+        item.classList.remove('selected');
+      } else {
+        modalSelectedTimes.add(tt);
+        item.classList.add('selected');
+      }
+      updateModalSelCount();
+    });
+    modalFrameGrid.appendChild(item);
+    if (modalFrameGrid.children.length % 6 === 0) await yieldFrame();
+  }
+
+  URL.revokeObjectURL(url);
+
+  // Store the video + canvases so Confirm can re-seek for full-res export
+  modalCurrentSeg._modalVideo  = video;
+  modalCurrentSeg._modalW      = W;
+  modalCurrentSeg._modalH      = H;
+  // (video URL is revoked but the video element still has the data buffered for short videos;
+  //  for large files we re-open below in confirmModal)
+}
+
+function updateModalSelCount() {
+  modalSelCount.textContent = modalSelectedTimes.size;
+}
+
+modalClose.addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', e => { if (e.target === modalBackdrop) closeModal(); });
+
+function closeModal() {
+  modalBackdrop.classList.remove('open');
+  modalCurrentSeg = null;
+}
+
+modalSelectAll.addEventListener('click', () => {
+  modalFrameGrid.querySelectorAll('.modal-frame-item').forEach(item => {
+    item.classList.add('selected');
+    modalSelectedTimes.add(Number(item.dataset.time));
+  });
+  updateModalSelCount();
+});
+
+modalClearSel.addEventListener('click', () => {
+  modalFrameGrid.querySelectorAll('.modal-frame-item').forEach(item => item.classList.remove('selected'));
+  modalSelectedTimes.clear();
+  updateModalSelCount();
+});
+
+modalConfirm.addEventListener('click', async () => {
+  if (!modalCurrentSeg) return;
+  const seg = modalCurrentSeg;
+  const chosenTimes = [...modalSelectedTimes].sort((a, b) => a - b);
+  closeModal();
+
+  // Remove previously chosen blobs for this segment
+  if (seg.chosenTimes && seg.chosenTimes.length > 0) {
+    extractedBlobs = extractedBlobs.filter(b => b._segIdx !== seg.segIdx);
+  }
+  seg.chosenTimes = chosenTimes;
+
+  // Re-open the video to capture full-res frames for the chosen times
+  if (chosenTimes.length > 0) {
+    const url = URL.createObjectURL(selectedFile);
+    const video = document.createElement('video');
+    video.src = url; video.muted = true; video.playsInline = true; video.preload = 'metadata';
+    await new Promise((res, rej) => {
+      video.addEventListener('loadedmetadata', res, { once: true });
+      video.addEventListener('error', () => rej(new Error('読み込み失敗')), { once: true });
+      video.load();
+    });
+    const W = video.videoWidth || 640, H = video.videoHeight || 360;
+    const oc = document.createElement('canvas');
+    oc.width = W; oc.height = H;
+    const octx = oc.getContext('2d');
+
+    const newThumbDataURLs = [];
+    for (const t of chosenTimes) {
+      await seekAndCapture(video, oc, octx, t);
+      const blob = await canvasToBlob(oc, 0.92);
+      const num  = String(extractedBlobs.length + 1).padStart(3, '0');
+      const filename = `video_seg${String(seg.segIdx).padStart(2,'0')}_${num}_t${t.toFixed(2)}s.jpg`;
+      extractedBlobs.push({ blob, filename, type: 'video', _segIdx: seg.segIdx });
+      // Capture thumb dataURL too
+      const SCALE = Math.min(1, 480 / W);
+      const tc = document.createElement('canvas');
+      tc.width = Math.round(W * SCALE); tc.height = Math.round(H * SCALE);
+      tc.getContext('2d').drawImage(oc, 0, 0, tc.width, tc.height);
+      newThumbDataURLs.push({ url: tc.toDataURL('image/jpeg', 0.45), t });
+    }
+    URL.revokeObjectURL(url);
+
+    // Replace placeholder thumbs with one thumb per chosen frame
+    // Remove old thumb elements for this segment
+    seg.thumbEls.forEach(el => el.parentNode && el.parentNode.removeChild(el));
+    seg.thumbEls = [];
+
+    // Find insertion point: right after the last thumb currently in grid
+    // (we just removed them, so append to end — ordering is handled by DOM order
+    //  since stills are already appended; for simplicity append new video thumbs at end)
+    for (const { url: dataURL, t } of newThumbDataURLs) {
+      const div = document.createElement('div');
+      div.className = 'thumb-item video-thumb';
+      const img = document.createElement('img');
+      img.src = dataURL;
+      const badge = document.createElement('div');
+      badge.className = 'thumb-badge badge-video';
+      badge.textContent = 'video';
+      const lbl = document.createElement('div');
+      lbl.className = 'thumb-label';
+      lbl.textContent = t.toFixed(1) + 's';
+      const hint = document.createElement('div');
+      hint.className = 'video-edit-hint';
+      hint.textContent = 'タップして再選択';
+      div.appendChild(img); div.appendChild(badge); div.appendChild(lbl); div.appendChild(hint);
+      div.addEventListener('click', () => openModal(seg));
+      thumbGrid.appendChild(div);
+      seg.thumbEls.push(div);
+    }
+
+    // If nothing selected, put back a single placeholder
+    if (chosenTimes.length === 0) {
+      restorePlaceholderThumb(seg);
+    }
+  } else {
+    // 0 selected — restore placeholder
+    seg.thumbEls.forEach(el => el.parentNode && el.parentNode.removeChild(el));
+    seg.thumbEls = [];
+    restorePlaceholderThumb(seg);
+  }
+
+  refreshResultStats();
+});
+
+function restorePlaceholderThumb(seg) {
+  const div = document.createElement('div');
+  div.className = 'thumb-item video-thumb';
+  // Use first time as preview
+  const t = seg.times[Math.floor(seg.times.length / 2)];
+  // We don't have the canvas anymore — just show a dark placeholder with label
+  const img = document.createElement('img');
+  const badge = document.createElement('div');
+  badge.className = 'thumb-badge';
+  badge.textContent = '未選択';
+  badge.style.background = 'rgba(232,160,32,0.25)';
+  badge.style.color = '#e8a020';
+  const lbl = document.createElement('div');
+  lbl.className = 'thumb-label';
+  lbl.textContent = t.toFixed(1) + 's';
+  const hint = document.createElement('div');
+  hint.className = 'video-edit-hint';
+  hint.textContent = 'タップして選択';
+  div.appendChild(img); div.appendChild(badge); div.appendChild(lbl); div.appendChild(hint);
+  div.addEventListener('click', () => openModal(seg));
+  thumbGrid.appendChild(div);
+  seg.thumbEls.push(div);
+}
 
 // ---- ZIP download ----
 dlBtn.addEventListener('click', async () => {
@@ -677,239 +928,6 @@ dlBtn.addEventListener('click', async () => {
   } finally {
     dlBtn.disabled = false;
     dlBtn.textContent = 'ZIPでダウンロード';
-  }
-});
-
-// =====================================================================
-// ---- MANUAL FRAME PICKER MODE ----
-// =====================================================================
-const manualIntervalSlider = document.getElementById('manualIntervalSlider');
-const manualIntervalVal    = document.getElementById('manualIntervalVal');
-const genFramesBtn         = document.getElementById('genFramesBtn');
-const manualProgressBox    = document.getElementById('manualProgressBox');
-const manualProgressFill   = document.getElementById('manualProgressFill');
-const manualProgressLabel  = document.getElementById('manualProgressLabel');
-const manualErrorBox       = document.getElementById('manualErrorBox');
-const manualToolbar        = document.getElementById('manualToolbar');
-const selCountNum          = document.getElementById('selCountNum');
-const totalFrameNum        = document.getElementById('totalFrameNum');
-const selectAllBtn         = document.getElementById('selectAllBtn');
-const clearSelBtn          = document.getElementById('clearSelBtn');
-const frameGrid            = document.getElementById('frameGrid');
-const manualEmpty          = document.getElementById('manualEmpty');
-const manualDlBtn          = document.getElementById('manualDlBtn');
-
-manualIntervalSlider.addEventListener('input', () => {
-  manualIntervalVal.textContent = Number(manualIntervalSlider.value).toFixed(1) + '秒';
-});
-
-// frames[i] = { time, blob(full-res JPEG blob, lazily created), dataURL(thumb), selected }
-let manualFrames = [];
-let manualBusy = false;
-
-function resetManual() {
-  manualFrames = [];
-  frameGrid.innerHTML = '';
-  frameGrid.classList.remove('visible');
-  manualToolbar.classList.remove('visible');
-  manualDlBtn.style.display = 'none';
-  manualEmpty.style.display = 'block';
-  manualEmpty.textContent = '動画を選択し、「フレーム一覧を生成」を押してください。';
-  manualErrorBox.classList.remove('visible');
-  manualProgressBox.classList.remove('visible');
-  updateSelCount();
-}
-
-function showManualError(msg) {
-  manualErrorBox.textContent = msg;
-  manualErrorBox.classList.add('visible');
-}
-
-function updateSelCount() {
-  const n = manualFrames.filter(f => f.selected).length;
-  selCountNum.textContent = n;
-  totalFrameNum.textContent = manualFrames.length;
-  manualDlBtn.style.display = n > 0 ? 'inline-block' : 'none';
-}
-
-genFramesBtn.addEventListener('click', async () => {
-  if (!selectedFile || manualBusy) return;
-  manualBusy = true;
-  genFramesBtn.disabled = true;
-  manualErrorBox.classList.remove('visible');
-  frameGrid.innerHTML = '';
-  frameGrid.classList.remove('visible');
-  manualToolbar.classList.remove('visible');
-  manualDlBtn.style.display = 'none';
-  manualEmpty.style.display = 'none';
-  manualFrames = [];
-  manualProgressBox.classList.add('visible');
-  manualProgressFill.style.width = '0%';
-  manualProgressLabel.textContent = '準備中';
-
-  const interval = Number(manualIntervalSlider.value);
-  const videoURL = URL.createObjectURL(selectedFile);
-
-  try {
-    const video = document.createElement('video');
-    video.src = videoURL;
-    video.muted = true;
-    video.playsInline = true;
-    video.preload = 'metadata';
-
-    await new Promise((res, rej) => {
-      video.addEventListener('loadedmetadata', res, { once: true });
-      video.addEventListener('error', () => rej(new Error('動画を読み込めませんでした')), { once: true });
-      video.load();
-    });
-
-    const duration = video.duration;
-    const W = video.videoWidth  || 640;
-    const H = video.videoHeight || 360;
-    const SCALE = Math.min(1, 480 / W);
-    const CW = Math.round(W * SCALE);
-    const CH = Math.round(H * SCALE);
-
-    const canvas = document.createElement('canvas');
-    canvas.width = CW; canvas.height = CH;
-    const ctx = canvas.getContext('2d');
-
-    const times = [];
-    for (let t = 0; t < duration; t += interval) times.push(t);
-    if (times.length === 0) times.push(0);
-
-    for (let i = 0; i < times.length; i++) {
-      const t = times[i];
-      await seekAndCapture(video, canvas, ctx, t);
-      const dataURL = canvas.toDataURL('image/jpeg', 0.55);
-      manualFrames.push({ time: t, dataURL, width: W, height: H, selected: false });
-
-      manualProgressLabel.textContent = `${i + 1}/${times.length}  (${t.toFixed(1)}s)`;
-      manualProgressFill.style.width = ((i + 1) / times.length * 100) + '%';
-      if (i % 5 === 0) await yieldFrame();
-    }
-
-    renderFrameGrid();
-    frameGrid.classList.add('visible');
-    manualToolbar.classList.add('visible');
-    updateSelCount();
-
-  } catch (e) {
-    showManualError('エラー: ' + e.message);
-    manualEmpty.style.display = 'block';
-    manualEmpty.textContent = '生成に失敗しました。';
-    console.error(e);
-  } finally {
-    URL.revokeObjectURL(videoURL);
-    manualProgressBox.classList.remove('visible');
-    genFramesBtn.disabled = false;
-    manualBusy = false;
-  }
-});
-
-function renderFrameGrid() {
-  frameGrid.innerHTML = '';
-  manualFrames.forEach((f, idx) => {
-    const div = document.createElement('div');
-    div.className = 'frame-item' + (f.selected ? ' selected' : '');
-    div.dataset.idx = idx;
-
-    const img = document.createElement('img');
-    img.src = f.dataURL;
-    img.alt = 'frame ' + idx;
-
-    const num = document.createElement('div');
-    num.className = 'frame-number';
-    num.textContent = '#' + String(idx + 1).padStart(3, '0');
-
-    const time = document.createElement('div');
-    time.className = 'frame-time';
-    time.textContent = f.time.toFixed(1) + 's';
-
-    const check = document.createElement('div');
-    check.className = 'frame-check';
-    check.textContent = '✓';
-
-    div.appendChild(img);
-    div.appendChild(num);
-    div.appendChild(time);
-    div.appendChild(check);
-
-    div.addEventListener('click', () => toggleFrame(idx, div));
-
-    frameGrid.appendChild(div);
-  });
-}
-
-function toggleFrame(idx, div) {
-  manualFrames[idx].selected = !manualFrames[idx].selected;
-  div.classList.toggle('selected', manualFrames[idx].selected);
-  updateSelCount();
-}
-
-selectAllBtn.addEventListener('click', () => {
-  manualFrames.forEach(f => f.selected = true);
-  [...frameGrid.children].forEach(el => el.classList.add('selected'));
-  updateSelCount();
-});
-clearSelBtn.addEventListener('click', () => {
-  manualFrames.forEach(f => f.selected = false);
-  [...frameGrid.children].forEach(el => el.classList.remove('selected'));
-  updateSelCount();
-});
-
-manualDlBtn.addEventListener('click', async () => {
-  const selected = manualFrames
-    .map((f, i) => ({ ...f, idx: i }))
-    .filter(f => f.selected);
-  if (selected.length === 0 || !selectedFile) return;
-
-  manualDlBtn.disabled = true;
-  manualDlBtn.textContent = 'ZIP作成中…';
-
-  const videoURL = URL.createObjectURL(selectedFile);
-  try {
-    const video = document.createElement('video');
-    video.src = videoURL;
-    video.muted = true;
-    video.playsInline = true;
-    video.preload = 'metadata';
-
-    await new Promise((res, rej) => {
-      video.addEventListener('loadedmetadata', res, { once: true });
-      video.addEventListener('error', () => rej(new Error('動画を読み込めませんでした')), { once: true });
-      video.load();
-    });
-
-    const W = video.videoWidth  || 640;
-    const H = video.videoHeight || 360;
-    const outCanvas = document.createElement('canvas');
-    outCanvas.width = W; outCanvas.height = H;
-    const outCtx = outCanvas.getContext('2d');
-
-    const zip = new JSZip();
-    for (let i = 0; i < selected.length; i++) {
-      const f = selected[i];
-      manualDlBtn.textContent = `ZIP作成中… (${i + 1}/${selected.length})`;
-      await seekAndCapture(video, outCanvas, outCtx, f.time);
-      const blob = await canvasToBlob(outCanvas, 0.92);
-      const num = String(f.idx + 1).padStart(3, '0');
-      zip.file(`frame_${num}_t${f.time.toFixed(2)}s.jpg`, blob);
-      await yieldFrame();
-    }
-
-    const content = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(content);
-    a.download = (selectedFile.name.replace(/\.[^.]+$/, '')) + '_selected.zip';
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-  } catch (e) {
-    showManualError('ZIP生成エラー: ' + e.message);
-  } finally {
-    URL.revokeObjectURL(videoURL);
-    manualDlBtn.disabled = false;
-    manualDlBtn.textContent = '選択したフレームをZIPでダウンロード';
   }
 });
 </script>
