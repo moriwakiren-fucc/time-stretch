@@ -1316,7 +1316,7 @@ runBtn.addEventListener('click', async () => {
         prevData = curData;
         inStill = true;
         stillTimes = [t];
-        bestDiff = 0;
+        bestDiff = Infinity;
         bestTime = t;
         continue;
       }
@@ -1347,12 +1347,16 @@ runBtn.addEventListener('click', async () => {
           spikeTimes.push(t);
 
           if (spikeCount >= HYSTERESIS) {
+            // flushStillRun() resets spikeTimes, so preserve the transition
+            // frames before flushing. Otherwise they disappear from both
+            // SLIDE and VIDEO results.
+            const transitionTimes = [...spikeTimes];
+
             await flushVideoRun();
             await flushStillRun();
 
             inStill = false;
-
-            videoTimes.push(...spikeTimes);
+            videoTimes.push(...transitionTimes);
 
             spikeCount = 0;
             spikeTimes = [];
@@ -1369,7 +1373,7 @@ runBtn.addEventListener('click', async () => {
             inStill = true;
             stillTimes = [...calmBuf];
 
-            bestDiff = 0;
+            bestDiff = Infinity;
 
             bestTime =
               calmBuf[
