@@ -20,696 +20,172 @@
     --sans: 'Inter', system-ui, sans-serif;
   }
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  header { width: 100%; max-width: 760px; padding: 48px 24px 32px; }
+  h1 { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; }
+  h1 span { color: var(--accent); }
+  .sub { margin-top: 8px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+  main { width: 100%; max-width: 760px; padding: 0 24px 64px; display: flex; flex-direction: column; gap: 20px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  .dropzone { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 48px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative; }
+  .dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: rgba(124,109,250,0.05); }
+  .dropzone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .dropzone-icon { font-size: 2rem; margin-bottom: 12px; opacity: 0.5; }
+  .dropzone-label { font-size: 0.95rem; color: var(--text-dim); }
+  .dropzone-label strong { color: var(--accent); font-weight: 500; }
+  .file-chosen { margin-top: 8px; font-size: 0.8rem; color: var(--text-dim); font-family: var(--mono); }
 
-  header {
-    width: 100%;
-    max-width: 760px;
-    padding: 48px 24px 32px;
-  }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .panel-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 2px; }
+  .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .setting-label { font-size: 0.875rem; color: var(--text); flex: 1; min-width: 0; }
+  .setting-desc { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; line-height: 1.4; }
+  .setting-control { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
-  h1 {
-    font-size: 1.7rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
+  input[type="range"] { -webkit-appearance: none; width: 120px; height: 4px; background: var(--border); border-radius: 2px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--accent); border-radius: 50%; cursor: pointer; }
+  .range-val { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); min-width: 36px; text-align: right; }
 
-  h1 span {
-    color: var(--accent);
-  }
+  .radio-group { display: flex; gap: 8px; }
+  .radio-group label { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; cursor: pointer; padding: 5px 12px; border: 1px solid var(--border); border-radius: 4px; transition: border-color 0.12s, background 0.12s; }
+  .radio-group input[type="radio"] { display: none; }
+  .radio-group label:has(input:checked) { border-color: var(--accent); background: rgba(124,109,250,0.12); color: var(--accent); }
 
-  .sub {
-    margin-top: 8px;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
+  .btn-row { display: flex; gap: 12px; align-items: center; }
+  .run-btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 13px 28px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
+  .run-btn:hover:not(:disabled) { opacity: 0.88; }
+  .run-btn:active:not(:disabled) { transform: scale(0.98); }
+  .run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-  main {
-    width: 100%;
-    max-width: 760px;
-    padding: 0 24px 64px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+  .abort-btn { background: transparent; color: var(--danger); border: 1px solid var(--danger); border-radius: var(--radius); padding: 12px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; display: none; }
+  .abort-btn:hover { background: rgba(224,92,92,0.1); }
+  .abort-btn.visible { display: block; }
+  .abort-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .dropzone {
-    border: 1.5px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 48px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    position: relative;
-  }
+  .progress-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; display: none; flex-direction: column; gap: 10px; }
+  .progress-box.visible { display: flex; }
+  .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.2s; }
+  .progress-log { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; max-height: 80px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+  .progress-status { font-size: 0.82rem; color: var(--text-dim); }
+  .progress-status strong { color: var(--text); font-family: var(--mono); }
 
-  .dropzone:hover,
-  .dropzone.drag-over {
-    border-color: var(--accent);
-    background: rgba(124,109,250,0.05);
-  }
+  .result-box { display: none; flex-direction: column; gap: 16px; }
+  .result-box.visible { display: flex; }
+  .result-stats { font-size: 0.85rem; color: var(--text-dim); }
+  .result-stats strong { color: var(--text); }
+  .thumb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
 
-  .dropzone input {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-  }
+  .thumb-item { position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb-item .thumb-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); font-family: var(--mono); font-size: 0.6rem; color: #ccc; padding: 2px 5px; }
+  .thumb-item .thumb-badge { position: absolute; top: 4px; right: 4px; font-size: 0.55rem; font-weight: 600; padding: 1px 5px; border-radius: 2px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .badge-still { background: var(--accent-dim); color: var(--accent); }
+  .badge-video { background: rgba(80,80,80,0.8); color: #aaa; }
 
-  .dropzone-icon {
-    font-size: 2rem;
-    margin-bottom: 12px;
-    opacity: 0.5;
-  }
-
-  .dropzone-label {
-    font-size: 0.95rem;
-    color: var(--text-dim);
-  }
-
-  .dropzone-label strong {
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  .file-chosen {
-    margin-top: 8px;
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    font-family: var(--mono);
-  }
-
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .panel-title {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 12px;
-    margin-bottom: 2px;
-  }
-
-  .setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .setting-label {
-    font-size: 0.875rem;
-    color: var(--text);
-    flex: 1;
-    min-width: 0;
-  }
-
-  .setting-desc {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-top: 2px;
-    line-height: 1.4;
-  }
-
-  .setting-control {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 120px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    background: var(--accent);
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .range-val {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--accent);
-    min-width: 36px;
-    text-align: right;
-  }
-
-  .radio-group {
-    display: flex;
-    gap: 8px;
-  }
-
-  .radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    padding: 5px 12px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    transition: border-color 0.12s, background 0.12s;
-  }
-
-  .radio-group input[type="radio"] {
-    display: none;
-  }
-
-  .radio-group label:has(input:checked) {
-    border-color: var(--accent);
-    background: rgba(124,109,250,0.12);
-    color: var(--accent);
-  }
-
-  .btn-row {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .run-btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 13px 28px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-  }
-
-  .run-btn:hover:not(:disabled) {
-    opacity: 0.88;
-  }
-
-  .run-btn:active:not(:disabled) {
-    transform: scale(0.98);
-  }
-
-  .run-btn:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
-
-  .abort-btn {
-    background: transparent;
-    color: var(--danger);
-    border: 1px solid var(--danger);
-    border-radius: var(--radius);
-    padding: 12px 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, opacity 0.15s;
-    display: none;
-  }
-
-  .abort-btn:hover {
-    background: rgba(224,92,92,0.1);
-  }
-
-  .abort-btn.visible {
-    display: block;
-  }
-
-  .abort-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .progress-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .progress-box.visible {
-    display: flex;
-  }
-
-  .progress-bar-wrap {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    width: 0%;
-    transition: width 0.2s;
-  }
-
-  .progress-log {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    line-height: 1.5;
-    max-height: 80px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
-
-  .progress-status {
-    font-size: 0.82rem;
-    color: var(--text-dim);
-  }
-
-  .progress-status strong {
-    color: var(--text);
-    font-family: var(--mono);
-  }
-
-  .result-box {
-    display: none;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .result-box.visible {
-    display: flex;
-  }
-
-  .result-stats {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-  }
-
-  .result-stats strong {
-    color: var(--text);
-  }
-
-  .thumb-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 8px;
-  }
-
-  /* still thumbnail — no interaction */
-  .thumb-item {
-    position: relative;
-    aspect-ratio: 16/9;
-    background: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .thumb-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .thumb-item .thumb-label {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.65);
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    color: #ccc;
-    padding: 2px 5px;
-  }
-
-  .thumb-item .thumb-badge {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    font-size: 0.55rem;
-    font-weight: 600;
-    padding: 1px 5px;
-    border-radius: 2px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .badge-still {
-    background: var(--accent-dim);
-    color: var(--accent);
-  }
-
-  .badge-video {
-    background: rgba(80,80,80,0.8);
-    color: #aaa;
-  }
-
-  /* video thumbnail — clickable, opens modal */
-  .thumb-item.video-thumb {
-    cursor: pointer;
-    border: 2.5px solid #e8a020;
-    box-shadow: 0 0 0 1px rgba(232,160,32,0.25);
-    border-radius: 5px;
-  }
-
-  .thumb-item.video-thumb:hover {
-    border-color: #f0b830;
-    box-shadow: 0 0 10px rgba(232,160,32,0.45);
-  }
-
+  .thumb-item.video-thumb { cursor: pointer; border: 2.5px solid #e8a020; box-shadow: 0 0 0 1px rgba(232,160,32,0.25); border-radius: 5px; }
+  .thumb-item.video-thumb:hover { border-color: #f0b830; box-shadow: 0 0 10px rgba(232,160,32,0.45); }
   .thumb-item.video-thumb .video-edit-hint {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0);
-    transition: background 0.15s, color 0.15s;
+    position: absolute; inset: 0; background: rgba(0,0,0,0); display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0); transition: background 0.15s, color 0.15s;
   }
+  .thumb-item.video-thumb:hover .video-edit-hint { background: rgba(0,0,0,0.45); color: #fff; }
 
-  .thumb-item.video-thumb:hover .video-edit-hint {
-    background: rgba(0,0,0,0.45);
-    color: #fff;
-  }
+  .dl-btn { background: var(--success); color: #fff; border: none; border-radius: var(--radius); padding: 12px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; align-self: flex-start; }
+  .dl-btn:hover:not(:disabled) { opacity: 0.88; }
+  .dl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  .dl-btn {
-    background: var(--success);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 12px 24px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    align-self: flex-start;
-  }
+  .error-box { display: none; background: rgba(224,92,92,0.1); border: 1px solid var(--danger); border-radius: var(--radius); padding: 14px 18px; font-size: 0.85rem; color: var(--danger); line-height: 1.5; }
+  .error-box.visible { display: block; }
 
-  .dl-btn:hover:not(:disabled) {
-    opacity: 0.88;
-  }
-
-  .dl-btn:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  .error-box {
-    display: none;
-    background: rgba(224,92,92,0.1);
-    border: 1px solid var(--danger);
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    font-size: 0.85rem;
-    color: var(--danger);
-    line-height: 1.5;
-  }
-
-  .error-box.visible {
-    display: block;
-  }
-
-  /* ===== Frame-picker modal ===== */
   .modal-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    z-index: 1000; align-items: center; justify-content: center; padding: 16px;
   }
-
-  .modal-backdrop.open {
-    display: flex;
-  }
-
+  .modal-backdrop.open { display: flex; }
   .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    width: 100%;
-    max-width: 700px;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    width: 100%; max-width: 700px; max-height: 90vh; display: flex; flex-direction: column;
     overflow: hidden;
   }
-
   .modal-header {
-    padding: 18px 20px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-shrink: 0;
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0;
   }
-
-  .modal-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .modal-sub {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-top: 3px;
-  }
-
+  .modal-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .modal-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 3px; }
   .modal-close {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    flex-shrink: 0;
+    background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+    border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.85rem; flex-shrink: 0;
   }
-
-  .modal-close:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .modal-body {
-    padding: 16px 20px;
-    overflow-y: auto;
-    flex: 1;
-  }
-
+  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
   .modal-frame-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 8px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px;
   }
-
   .modal-frame-item {
-    position: relative;
-    aspect-ratio: 16/9;
-    background: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: pointer;
+    position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 4px;
+    overflow: hidden; cursor: pointer;
     border: 3px solid transparent;
     transition: border-color 0.1s, box-shadow 0.1s, transform 0.08s;
   }
-
-  .modal-frame-item:hover {
-    border-color: rgba(124,109,250,0.5);
-  }
-
+  .modal-frame-item:hover { border-color: rgba(124,109,250,0.5); }
   .modal-frame-item.selected {
     border-color: var(--accent);
     box-shadow: 0 0 0 2px rgba(124,109,250,0.35), 0 4px 14px rgba(124,109,250,0.3);
     transform: scale(0.97);
   }
-
   .modal-frame-item.selected::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(124,109,250,0.1);
-    pointer-events: none;
+    content: ''; position: absolute; inset: 0; background: rgba(124,109,250,0.1); pointer-events: none;
   }
-
-  .modal-frame-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    pointer-events: none;
-  }
-
+  .modal-frame-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
   .modal-frame-item .mf-time {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.65);
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    color: #ccc;
-    padding: 2px 5px;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.65); font-family: var(--mono); font-size: 0.6rem; color: #ccc; padding: 2px 5px;
     pointer-events: none;
   }
-
   .modal-frame-item .mf-check {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: 700;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    pointer-events: none;
+    position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 700;
+    display: none; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4); pointer-events: none;
   }
-
-  .modal-frame-item.selected .mf-check {
-    display: flex;
-  }
-
+  .modal-frame-item.selected .mf-check { display: flex; }
   .modal-footer {
-    padding: 14px 20px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-shrink: 0;
-    flex-wrap: wrap;
+    padding: 14px 20px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; flex-wrap: wrap;
   }
-
-  .modal-sel-info {
-    font-size: 0.82rem;
-    color: var(--text-dim);
-  }
-
-  .modal-sel-info strong {
-    color: var(--accent);
-    font-family: var(--mono);
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 8px;
-  }
-
+  .modal-sel-info { font-size: 0.82rem; color: var(--text-dim); }
+  .modal-sel-info strong { color: var(--accent); font-family: var(--mono); }
+  .modal-actions { display: flex; gap: 8px; }
   .modal-btn {
-    border: none;
-    border-radius: var(--radius);
-    padding: 10px 18px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.12s;
+    border: none; border-radius: var(--radius); padding: 10px 18px;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: opacity 0.12s;
   }
-
-  .modal-btn:hover {
-    opacity: 0.85;
-  }
-
-  .modal-btn.primary {
-    background: var(--accent);
-    color: #fff;
-  }
-
-  .modal-btn.secondary {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-  }
-
-  .modal-btn.secondary:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .modal-loading {
-    padding: 32px;
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 0.85rem;
-  }
+  .modal-btn:hover { opacity: 0.85; }
+  .modal-btn.primary { background: var(--accent); color: #fff; }
+  .modal-btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
+  .modal-btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-loading { padding: 32px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
 
   @media (max-width: 500px) {
-    h1 {
-      font-size: 1.3rem;
-    }
-
-    .setting-row {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    input[type="range"] {
-      width: 100%;
-    }
-
-    .modal {
-      max-height: 95vh;
-    }
+    h1 { font-size: 1.3rem; }
+    .setting-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+    input[type="range"] { width: 100%; }
+    .modal { max-height: 95vh; }
   }
 </style>
 </head>
-
 <body>
+
 <header>
   <h1>スライド<span>抽出</span></h1>
   <p class="sub">動画内の静止画スライドを1枚ずつ検出してJPEGで保存します。処理はすべてブラウザ内で完結します。</p>
 </header>
 
 <main>
+
   <div class="dropzone" id="dropzone">
     <input type="file" id="fileInput" accept="video/*">
     <div class="dropzone-icon">▶</div>
@@ -835,7 +311,7 @@ const errorBox        = document.getElementById('errorBox');
 const resultBox       = document.getElementById('resultBox');
 const resultStats     = document.getElementById('resultStats');
 const thumbGrid       = document.getElementById('thumbGrid');
-const dlBtn            = document.getElementById('dlBtn');
+const dlBtn           = document.getElementById('dlBtn');
 const threshSlider    = document.getElementById('threshSlider');
 const threshVal       = document.getElementById('threshVal');
 const minFramesSlider = document.getElementById('minFramesSlider');
@@ -853,17 +329,14 @@ const modalSelectAll  = document.getElementById('modalSelectAll');
 const modalClearSel   = document.getElementById('modalClearSel');
 const modalConfirm    = document.getElementById('modalConfirm');
 
-threshSlider.addEventListener('input', () => {
-  threshVal.textContent = threshSlider.value;
-});
+// 初期表示値をスライダーの初期値と一致させる
+threshVal.textContent = threshSlider.value;
+minFramesVal.textContent = minFramesSlider.value;
+fpsVal.textContent = fpsSlider.value;
 
-minFramesSlider.addEventListener('input', () => {
-  minFramesVal.textContent = minFramesSlider.value;
-});
-
-fpsSlider.addEventListener('input', () => {
-  fpsVal.textContent = fpsSlider.value;
-});
+threshSlider.addEventListener('input', () => threshVal.textContent = threshSlider.value);
+minFramesSlider.addEventListener('input', () => minFramesVal.textContent = minFramesSlider.value);
+fpsSlider.addEventListener('input', () => fpsVal.textContent = fpsSlider.value);
 
 let selectedFile = null;
 
@@ -1110,7 +583,6 @@ runBtn.addEventListener('click', async () => {
     let videoSegCount = 0;
 
     // For "one" mode: collect all video-segment times so the user can pick frames later.
-    // videoSegStore[i] = { segIndex, times: number[] }
     const videoSegStore = [];
 
     // ---- addThumb: returns the div so callers can attach data ----
@@ -1134,10 +606,13 @@ runBtn.addEventListener('click', async () => {
       img.src = dataURL;
 
       const badge = document.createElement('div');
+
       badge.className =
         'thumb-badge ' +
         (type === 'still' ? 'badge-still' : 'badge-video');
-      badge.textContent = type === 'still' ? 'slide' : 'video';
+
+      badge.textContent =
+        type === 'still' ? 'slide' : 'video';
 
       const lbl = document.createElement('div');
       lbl.className = 'thumb-label';
@@ -1158,30 +633,33 @@ runBtn.addEventListener('click', async () => {
         videoTimes.push(...stillTimes);
       } else {
         /*
-         * bestTime が何らかの理由で undefined / NaN / Infinity
-         * になっていても、stillTimes から代表時刻を取得する。
-         *
-         * 静止画・動画の判定条件自体は変更していない。
+         * bestTime が有効な数値なら従来どおり使用する。
+         * 万一 undefined / NaN / Infinity になった場合だけ、
+         * stillTimes の中央時刻を使用してエラーを防ぐ。
          */
-        const fallbackTime =
-          stillTimes[Math.floor(stillTimes.length / 2)];
-
         const exportTime =
           Number.isFinite(bestTime)
             ? bestTime
-            : Number.isFinite(fallbackTime)
-              ? fallbackTime
-              : 0;
+            : stillTimes[Math.floor(stillTimes.length / 2)];
 
-        await seekAndCapture(video, canvas, ctx, exportTime);
+        await seekAndCapture(
+          video,
+          canvas,
+          ctx,
+          exportTime
+        );
 
         outCtx.drawImage(video, 0, 0, W, H);
 
-        const blob = await canvasToBlob(outCanvas, 0.92);
+        const blob = await canvasToBlob(
+          outCanvas,
+          0.92
+        );
 
         slideCount++;
 
-        const num = String(slideCount).padStart(3, '0');
+        const num =
+          String(slideCount).padStart(3, '0');
 
         const filename =
           `slide_${num}_t${exportTime.toFixed(2)}s.jpg`;
@@ -1246,7 +724,9 @@ runBtn.addEventListener('click', async () => {
 
         thumbDiv.classList.add('video-thumb');
 
-        const hint = document.createElement('div');
+        const hint =
+          document.createElement('div');
+
         hint.className = 'video-edit-hint';
         hint.textContent = 'タップして選択';
 
@@ -1262,7 +742,9 @@ runBtn.addEventListener('click', async () => {
         badge.style.color = '#e8a020';
 
         const storeEntry =
-          videoSegStore[videoSegStore.length - 1];
+          videoSegStore[
+            videoSegStore.length - 1
+          ];
 
         storeEntry.thumbEls.push(thumbDiv);
 
@@ -1327,10 +809,11 @@ runBtn.addEventListener('click', async () => {
         continue;
       }
 
-      const diff = frameDiff(
-        prevData,
-        curData
-      );
+      const diff =
+        frameDiff(
+          prevData,
+          curData
+        );
 
       prevData = curData;
 
@@ -1373,6 +856,7 @@ runBtn.addEventListener('click', async () => {
             await flushVideoRun();
 
             inStill = true;
+
             stillTimes = [...calmBuf];
 
             bestDiff = 0;
@@ -1451,7 +935,6 @@ let modalSelectedTimes = new Set();
 
 async function openModal(seg) {
   modalCurrentSeg = seg;
-
   modalSelectedTimes =
     new Set(seg.chosenTimes || []);
 
@@ -1467,9 +950,7 @@ async function openModal(seg) {
 
   modalFrameGrid.innerHTML = '';
   modalLoading.style.display = 'block';
-
   modalBackdrop.classList.add('open');
-
   updateModalSelCount();
 
   // Open a fresh video for seeking inside the modal
@@ -1500,8 +981,11 @@ async function openModal(seg) {
     video.load();
   });
 
-  const W = video.videoWidth || 640;
-  const H = video.videoHeight || 360;
+  const W =
+    video.videoWidth || 640;
+
+  const H =
+    video.videoHeight || 360;
 
   const SCALE =
     Math.min(1, 480 / W);
@@ -1628,13 +1112,9 @@ async function openModal(seg) {
 
   URL.revokeObjectURL(url);
 
-  // Store the video + canvases so Confirm can re-seek for full-res export
   modalCurrentSeg._modalVideo = video;
   modalCurrentSeg._modalW = W;
   modalCurrentSeg._modalH = H;
-
-  // (video URL is revoked but the video element still has the data buffered for short videos;
-  //  for large files we re-open below in confirmModal)
 }
 
 function updateModalSelCount() {
@@ -1706,7 +1186,6 @@ modalConfirm.addEventListener(
 
     closeModal();
 
-    // Remove previously chosen blobs for this segment
     if (
       seg.chosenTimes &&
       seg.chosenTimes.length > 0
@@ -1719,7 +1198,6 @@ modalConfirm.addEventListener(
 
     seg.chosenTimes = chosenTimes;
 
-    // Re-open the video to capture full-res frames for the chosen times
     if (chosenTimes.length > 0) {
       const url =
         URL.createObjectURL(selectedFile);
@@ -1794,7 +1272,6 @@ modalConfirm.addEventListener(
           _segIdx: seg.segIdx
         });
 
-        // Capture thumb dataURL too
         const SCALE =
           Math.min(1, 480 / W);
 
@@ -1827,8 +1304,6 @@ modalConfirm.addEventListener(
 
       URL.revokeObjectURL(url);
 
-      // Replace placeholder thumbs with one thumb per chosen frame
-      // Remove old thumb elements for this segment
       seg.thumbEls.forEach(
         el =>
           el.parentNode &&
@@ -1837,9 +1312,6 @@ modalConfirm.addEventListener(
 
       seg.thumbEls = [];
 
-      // Find insertion point: right after the last thumb currently in grid
-      // (we just removed them, so append to end — ordering is handled by DOM order
-      //  since stills are already appended; for simplicity append new video thumbs at end)
       for (
         const {
           url: dataURL,
@@ -1894,17 +1366,14 @@ modalConfirm.addEventListener(
         );
 
         thumbGrid.appendChild(div);
-
         seg.thumbEls.push(div);
       }
 
-      // If nothing selected, put back a single placeholder
       if (chosenTimes.length === 0) {
         restorePlaceholderThumb(seg);
       }
 
     } else {
-      // 0 selected — restore placeholder
       seg.thumbEls.forEach(
         el =>
           el.parentNode &&
@@ -1927,37 +1396,27 @@ function restorePlaceholderThumb(seg) {
   div.className =
     'thumb-item video-thumb';
 
-  // Use first time as preview
   const t =
     seg.times[
       Math.floor(seg.times.length / 2)
     ];
 
-  // We don't have the canvas anymore — just show a dark placeholder with label
   const img =
     document.createElement('img');
 
   const badge =
     document.createElement('div');
 
-  badge.className =
-    'thumb-badge';
-
-  badge.textContent =
-    '未選択';
-
+  badge.className = 'thumb-badge';
+  badge.textContent = '未選択';
   badge.style.background =
     'rgba(232,160,32,0.25)';
-
-  badge.style.color =
-    '#e8a020';
+  badge.style.color = '#e8a020';
 
   const lbl =
     document.createElement('div');
 
-  lbl.className =
-    'thumb-label';
-
+  lbl.className = 'thumb-label';
   lbl.textContent =
     t.toFixed(1) + 's';
 
@@ -1981,7 +1440,6 @@ function restorePlaceholderThumb(seg) {
   );
 
   thumbGrid.appendChild(div);
-
   seg.thumbEls.push(div);
 }
 
@@ -2054,5 +1512,6 @@ dlBtn.addEventListener(
   }
 );
 </script>
+
 </body>
 </html>
