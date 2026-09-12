@@ -1157,21 +1157,15 @@ runBtn.addEventListener('click', async () => {
         // Too short — treat as video
         videoTimes.push(...stillTimes);
       } else {
-        /*
-         * bestTime が何らかの理由で undefined / NaN / Infinity
-         * になっていても、stillTimes から代表時刻を取得する。
-         *
-         * 静止画・動画の判定条件自体は変更していない。
-         */
+        // bestTimeは現在のstillTimesに含まれる場合だけ採用する。
+        // 区間確定後にリセットされた値や、前区間の値は使わない。
         const fallbackTime =
           stillTimes[Math.floor(stillTimes.length / 2)];
 
         const exportTime =
-          Number.isFinite(bestTime)
+          Number.isFinite(bestTime) && stillTimes.includes(bestTime)
             ? bestTime
-            : Number.isFinite(fallbackTime)
-              ? fallbackTime
-              : 0;
+            : fallbackTime;
 
         await seekAndCapture(video, canvas, ctx, exportTime);
 
