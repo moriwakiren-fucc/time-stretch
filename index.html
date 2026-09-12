@@ -20,22 +20,14 @@
     --sans: 'Inter', system-ui, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: var(--sans); min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
-  }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
   header { width: 100%; max-width: 760px; padding: 48px 24px 32px; }
   h1 { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; }
   h1 span { color: var(--accent); }
   .sub { margin-top: 8px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
   main { width: 100%; max-width: 760px; padding: 0 24px 64px; display: flex; flex-direction: column; gap: 20px; }
 
-  .dropzone {
-    border: 1.5px dashed var(--border); border-radius: var(--radius);
-    padding: 48px 24px; text-align: center; cursor: pointer;
-    transition: border-color 0.15s, background 0.15s; position: relative;
-  }
+  .dropzone { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 48px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative; }
   .dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: rgba(124,109,250,0.05); }
   .dropzone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .dropzone-icon { font-size: 2rem; margin-bottom: 12px; opacity: 0.5; }
@@ -43,59 +35,36 @@
   .dropzone-label strong { color: var(--accent); font-weight: 500; }
   .file-chosen { margin-top: 8px; font-size: 0.8rem; color: var(--text-dim); font-family: var(--mono); }
 
-  .panel {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px 24px;
-    display: flex; flex-direction: column; gap: 16px;
-  }
-  .panel-title {
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--text-dim);
-    border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 2px;
-  }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .panel-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 2px; }
   .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .setting-label { font-size: 0.875rem; color: var(--text); flex: 1; min-width: 0; }
   .setting-desc { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; line-height: 1.4; }
   .setting-control { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  input[type="range"] {
-    -webkit-appearance: none; width: 120px; height: 4px;
-    background: var(--border); border-radius: 2px; outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 14px; height: 14px;
-    background: var(--accent); border-radius: 50%; cursor: pointer;
-  }
+  input[type="range"] { -webkit-appearance: none; width: 120px; height: 4px; background: var(--border); border-radius: 2px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--accent); border-radius: 50%; cursor: pointer; }
   .range-val { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); min-width: 36px; text-align: right; }
   .radio-group { display: flex; gap: 8px; }
-  .radio-group label {
-    display: flex; align-items: center; gap: 6px; font-size: 0.85rem;
-    cursor: pointer; padding: 5px 12px; border: 1px solid var(--border);
-    border-radius: 4px; transition: border-color 0.12s, background 0.12s;
-  }
+  .radio-group label { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; cursor: pointer; padding: 5px 12px; border: 1px solid var(--border); border-radius: 4px; transition: border-color 0.12s, background 0.12s; }
   .radio-group input[type="radio"] { display: none; }
   .radio-group label:has(input:checked) { border-color: var(--accent); background: rgba(124,109,250,0.12); color: var(--accent); }
 
-  .run-btn {
-    background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
-    padding: 13px 28px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s; align-self: flex-start;
-  }
+  /* Button row */
+  .btn-row { display: flex; gap: 12px; align-items: center; }
+  .run-btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 13px 28px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
   .run-btn:hover:not(:disabled) { opacity: 0.88; }
   .run-btn:active:not(:disabled) { transform: scale(0.98); }
   .run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .abort-btn { background: transparent; color: var(--danger); border: 1px solid var(--danger); border-radius: var(--radius); padding: 12px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; display: none; }
+  .abort-btn:hover { background: rgba(224,92,92,0.1); }
+  .abort-btn.visible { display: block; }
+  .abort-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .progress-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px 24px;
-    display: none; flex-direction: column; gap: 10px;
-  }
+  .progress-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; display: none; flex-direction: column; gap: 10px; }
   .progress-box.visible { display: flex; }
   .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.2s; }
-  .progress-log {
-    font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
-    line-height: 1.5; max-height: 80px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
-  }
+  .progress-log { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; max-height: 80px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
   .progress-status { font-size: 0.82rem; color: var(--text-dim); }
   .progress-status strong { color: var(--text); font-family: var(--mono); }
 
@@ -103,36 +72,19 @@
   .result-box.visible { display: flex; }
   .result-stats { font-size: 0.85rem; color: var(--text-dim); }
   .result-stats strong { color: var(--text); }
-
   .thumb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
   .thumb-item { position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 4px; overflow: hidden; }
   .thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .thumb-item .thumb-label {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: rgba(0,0,0,0.65); font-family: var(--mono);
-    font-size: 0.6rem; color: #ccc; padding: 2px 5px;
-  }
-  .thumb-item .thumb-badge {
-    position: absolute; top: 4px; right: 4px; font-size: 0.55rem;
-    font-weight: 600; padding: 1px 5px; border-radius: 2px;
-    letter-spacing: 0.04em; text-transform: uppercase;
-  }
+  .thumb-item .thumb-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); font-family: var(--mono); font-size: 0.6rem; color: #ccc; padding: 2px 5px; }
+  .thumb-item .thumb-badge { position: absolute; top: 4px; right: 4px; font-size: 0.55rem; font-weight: 600; padding: 1px 5px; border-radius: 2px; letter-spacing: 0.04em; text-transform: uppercase; }
   .badge-still { background: var(--accent-dim); color: var(--accent); }
   .badge-video { background: rgba(80,80,80,0.8); color: #aaa; }
 
-  .dl-btn {
-    background: var(--success); color: #fff; border: none; border-radius: var(--radius);
-    padding: 12px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
-    transition: opacity 0.15s; align-self: flex-start;
-  }
+  .dl-btn { background: var(--success); color: #fff; border: none; border-radius: var(--radius); padding: 12px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; align-self: flex-start; }
   .dl-btn:hover:not(:disabled) { opacity: 0.88; }
   .dl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  .error-box {
-    display: none; background: rgba(224,92,92,0.1); border: 1px solid var(--danger);
-    border-radius: var(--radius); padding: 14px 18px; font-size: 0.85rem;
-    color: var(--danger); line-height: 1.5;
-  }
+  .error-box { display: none; background: rgba(224,92,92,0.1); border: 1px solid var(--danger); border-radius: var(--radius); padding: 14px 18px; font-size: 0.85rem; color: var(--danger); line-height: 1.5; }
   .error-box.visible { display: block; }
 
   @media (max-width: 500px) {
@@ -160,7 +112,7 @@
     <div class="setting-row">
       <div class="setting-label">
         フレーム差分閾値
-        <div class="setting-desc">この値より差分が小さければ「同一スライド」とみなします（大きくすると寛容）</div>
+        <div class="setting-desc">基準フレームとの差がこの値を超えたらスライド切り替えと判定（大きくすると寛容）</div>
       </div>
       <div class="setting-control">
         <input type="range" id="threshSlider" min="1" max="30" value="8" step="1">
@@ -201,7 +153,10 @@
     </div>
   </div>
 
-  <button class="run-btn" id="runBtn" disabled>抽出を開始</button>
+  <div class="btn-row">
+    <button class="run-btn" id="runBtn" disabled>抽出を開始</button>
+    <button class="abort-btn" id="abortBtn">中止</button>
+  </div>
 
   <div class="progress-box" id="progressBox">
     <div class="progress-status">処理中… <strong id="progressLabel">準備中</strong></div>
@@ -220,11 +175,11 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-// ---- UI refs ----
 const dropzone      = document.getElementById('dropzone');
 const fileInput     = document.getElementById('fileInput');
 const fileChosen    = document.getElementById('fileChosen');
 const runBtn        = document.getElementById('runBtn');
+const abortBtn      = document.getElementById('abortBtn');
 const progressBox   = document.getElementById('progressBox');
 const progressFill  = document.getElementById('progressFill');
 const progressLabel = document.getElementById('progressLabel');
@@ -234,7 +189,6 @@ const resultBox     = document.getElementById('resultBox');
 const resultStats   = document.getElementById('resultStats');
 const thumbGrid     = document.getElementById('thumbGrid');
 const dlBtn         = document.getElementById('dlBtn');
-
 const threshSlider    = document.getElementById('threshSlider');
 const threshVal       = document.getElementById('threshVal');
 const minFramesSlider = document.getElementById('minFramesSlider');
@@ -246,7 +200,6 @@ threshSlider.addEventListener('input',    () => threshVal.textContent    = thres
 minFramesSlider.addEventListener('input', () => minFramesVal.textContent = minFramesSlider.value);
 fpsSlider.addEventListener('input',       () => fpsVal.textContent       = fpsSlider.value);
 
-// ---- File ----
 let selectedFile = null;
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
@@ -272,18 +225,9 @@ function getSettings() {
   };
 }
 
-function log(msg) {
-  progressLog.textContent += msg + '\n';
-  progressLog.scrollTop = progressLog.scrollHeight;
-}
-function setProgress(pct, label) {
-  progressFill.style.width = pct + '%';
-  if (label) progressLabel.textContent = label;
-}
-function showError(msg) {
-  errorBox.textContent = msg;
-  errorBox.classList.add('visible');
-}
+function log(msg) { progressLog.textContent += msg + '\n'; progressLog.scrollTop = progressLog.scrollHeight; }
+function setProgress(pct, label) { progressFill.style.width = pct + '%'; if (label) progressLabel.textContent = label; }
+function showError(msg) { errorBox.textContent = msg; errorBox.classList.add('visible'); }
 function hideAll() {
   resultBox.classList.remove('visible');
   progressBox.classList.remove('visible');
@@ -294,12 +238,11 @@ function hideAll() {
   extractedBlobs = [];
 }
 
-// ---- Luma diff between two ImageData (sampled) ----
+// ---- Luma diff: compare two ImageData pixel-by-pixel (sampled) ----
 function frameDiff(a, b) {
   const da = a.data, db = b.data, len = da.length;
   let sum = 0, count = 0;
-  // sample every 8th pixel for speed (stride=32 bytes)
-  for (let i = 0; i < len; i += 32) {
+  for (let i = 0; i < len; i += 32) { // every 8th pixel
     const la = 0.299*da[i] + 0.587*da[i+1] + 0.114*da[i+2];
     const lb = 0.299*db[i] + 0.587*db[i+1] + 0.114*db[i+2];
     sum += Math.abs(la - lb);
@@ -308,9 +251,17 @@ function frameDiff(a, b) {
   return sum / count;
 }
 
-// ---- Seek video to time, return ImageData ----
 function seekAndCapture(video, canvas, ctx, time) {
   return new Promise((resolve, reject) => {
+    const t = Math.max(0, Math.min(time, video.duration - 0.001));
+    // If already at that time (within 1ms), just capture
+    if (Math.abs(video.currentTime - t) < 0.001) {
+      try {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      } catch(e) { reject(e); }
+      return;
+    }
     const onSeeked = () => {
       video.removeEventListener('seeked', onSeeked);
       video.removeEventListener('error', onError);
@@ -319,44 +270,49 @@ function seekAndCapture(video, canvas, ctx, time) {
         resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
       } catch(e) { reject(e); }
     };
-    const onError = (e) => {
+    const onError = () => {
       video.removeEventListener('seeked', onSeeked);
       video.removeEventListener('error', onError);
-      reject(new Error('シーク失敗'));
+      reject(new Error('シーク失敗 t=' + t));
     };
     video.addEventListener('seeked', onSeeked, { once: true });
     video.addEventListener('error',  onError,  { once: true });
-    video.currentTime = Math.max(0, Math.min(time, video.duration - 0.001));
+    video.currentTime = t;
   });
 }
 
-// ---- Canvas → JPEG Blob ----
 function canvasToBlob(canvas, quality) {
   return new Promise(res => canvas.toBlob(res, 'image/jpeg', quality ?? 0.92));
 }
+function yieldFrame() { return new Promise(r => setTimeout(r, 0)); }
 
-// ---- Yield to browser (prevent UI freeze) ----
-function yieldFrame() {
-  return new Promise(r => setTimeout(r, 0));
-}
-
-// ---- Main extraction (streaming, low memory) ----
 let extractedBlobs = [];
+
+// ---- Abort controller ----
+let abortRequested = false;
+abortBtn.addEventListener('click', () => {
+  abortRequested = true;
+  abortBtn.disabled = true;
+  abortBtn.textContent = '中止中…';
+});
 
 runBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
   hideAll();
   extractedBlobs = [];
+  abortRequested = false;
 
   const { diffThresh, minFrames, fps, videoMode } = getSettings();
 
   progressBox.classList.add('visible');
   runBtn.disabled = true;
+  abortBtn.classList.add('visible');
+  abortBtn.disabled = false;
+  abortBtn.textContent = '中止';
 
   const videoURL = URL.createObjectURL(selectedFile);
 
   try {
-    // Load video metadata
     log('動画を読み込み中…');
     setProgress(2, '動画ロード中');
 
@@ -375,23 +331,19 @@ runBtn.addEventListener('click', async () => {
     const duration = video.duration;
     const W = video.videoWidth  || 640;
     const H = video.videoHeight || 360;
-    // Scale down canvas for analysis (cap at 480px wide) to save memory
     const SCALE = Math.min(1, 480 / W);
     const CW = Math.round(W * SCALE);
     const CH = Math.round(H * SCALE);
-
     const totalFrames = Math.floor(duration * fps);
     const interval = 1 / fps;
 
     log(`動画長: ${duration.toFixed(1)}s  元解像度: ${W}×${H}`);
     log(`解析解像度: ${CW}×${CH}  FPS: ${fps}  総フレーム数: ${totalFrames}`);
 
-    // Working canvas (analysis + capture)
     const canvas = document.createElement('canvas');
     canvas.width = CW; canvas.height = CH;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-    // Full-res canvas for JPEG output
     const outCanvas = document.createElement('canvas');
     outCanvas.width = W; outCanvas.height = H;
     const outCtx = outCanvas.getContext('2d');
@@ -399,63 +351,82 @@ runBtn.addEventListener('click', async () => {
     setProgress(5, 'フレーム解析中');
     resultBox.classList.add('visible');
 
-    // ---- Streaming state machine ----
-    // We process one frame at a time; only keep:
-    //   prevData      – previous frame's ImageData (small, analysis res)
-    //   run           – current run state
-    //   bestFrame     – best representative data so far (in current run)
+    // -----------------------------------------------------------------------
+    // Key design change:
     //
-    // When a run ends we immediately encode to JPEG and discard pixel data.
+    // Instead of comparing frame[i] vs frame[i-1] (consecutive diff),
+    // we compare every frame against a stable ANCHOR frame for the current run.
+    //
+    // State:
+    //   anchor      – ImageData of the first frame of the current run
+    //   anchorTime  – timestamp of anchor
+    //   runTimes[]  – timestamps collected so far in this run
+    //   bestDiff    – smallest diff-to-anchor seen so far (→ most stable frame)
+    //   bestTime    – timestamp of most stable frame
+    //   videoTimes[]– timestamps of video-run frames pending flush
+    //
+    // A run ends when diff(anchor, curFrame) >= diffThresh.
+    // When a run ends:
+    //   - if len >= minFrames → emit as still
+    //   - else               → push into videoTimes
+    // Then start a new run with curFrame as anchor.
+    //
+    // This prevents "drift" where a slow gradual change never triggers the
+    // consecutive-diff threshold but clearly differs from the original slide.
+    // -----------------------------------------------------------------------
 
-    let prevData = null;
+    let anchor    = null;   // ImageData (small res)
+    let anchorTime = 0;
+    let runTimes  = [];     // timestamps in current run
+    let bestDiff  = Infinity;
+    let bestTime  = 0;
 
-    // Current still run accumulator
-    let run = null;
-    // { count, sumDiff, bestDiff, bestTime, bestData(ImageData@analysis-res) }
-
-    // Current video run accumulator
-    let videoRun = null;
-    // { count, midTime, frames[] } — we only keep midTime, not pixel data
-
+    let videoTimes = [];    // timestamps of current video segment
     let slideCount = 0;
     let videoSegCount = 0;
 
-    // Flush a completed still run → encode & emit thumb
-    async function flushStillRun(r) {
-      if (r.count < minFrames) return null; // too short → treat as video below
-      // Seek to best time and capture at full res
-      await seekAndCapture(video, canvas, ctx, r.bestTime); // update small canvas (don't need it)
-      outCtx.drawImage(video, 0, 0, W, H);
-      const blob = await canvasToBlob(outCanvas, 0.92);
-      slideCount++;
-      const num = String(slideCount).padStart(3, '0');
-      const filename = `slide_${num}_t${r.bestTime.toFixed(2)}s.jpg`;
-      extractedBlobs.push({ blob, filename, type: 'still' });
-      addThumb(video, r.bestTime, 'still', r.bestTime);
-      return filename;
+    async function flushStillRun() {
+      if (runTimes.length < minFrames) {
+        // Too short — absorb into video
+        videoTimes.push(...runTimes);
+      } else {
+        // Encode best frame at full res
+        await seekAndCapture(video, canvas, ctx, bestTime);
+        outCtx.drawImage(video, 0, 0, W, H);
+        const blob = await canvasToBlob(outCanvas, 0.92);
+        slideCount++;
+        const num = String(slideCount).padStart(3, '0');
+        const filename = `slide_${num}_t${bestTime.toFixed(2)}s.jpg`;
+        extractedBlobs.push({ blob, filename, type: 'still' });
+        // Thumbnail from current video state (already seeked to bestTime)
+        addThumb(canvas, ctx, CW, CH, 'still', bestTime);
+      }
+      anchor = null; runTimes = []; bestDiff = Infinity; bestTime = 0;
     }
 
-    // Flush a video segment → optionally encode 1 frame
-    async function flushVideoRun(vr) {
+    async function flushVideoRun() {
+      if (videoTimes.length === 0) return;
       videoSegCount++;
-      if (videoMode === 'skip') return;
-      const midTime = vr.frames[Math.floor(vr.frames.length / 2)];
-      await seekAndCapture(video, canvas, ctx, midTime);
-      outCtx.drawImage(video, 0, 0, W, H);
-      const blob = await canvasToBlob(outCanvas, 0.92);
-      const num = String(extractedBlobs.length + 1).padStart(3, '0');
-      const filename = `video_seg_${num}_t${midTime.toFixed(2)}s.jpg`;
-      extractedBlobs.push({ blob, filename, type: 'video' });
-      addThumb(video, midTime, 'video', midTime);
+      if (videoMode === 'one') {
+        const midTime = videoTimes[Math.floor(videoTimes.length / 2)];
+        await seekAndCapture(video, canvas, ctx, midTime);
+        outCtx.drawImage(video, 0, 0, W, H);
+        const blob = await canvasToBlob(outCanvas, 0.92);
+        const num = String(extractedBlobs.length + 1).padStart(3, '0');
+        const filename = `video_seg_${num}_t${midTime.toFixed(2)}s.jpg`;
+        extractedBlobs.push({ blob, filename, type: 'video' });
+        addThumb(canvas, ctx, CW, CH, 'video', midTime);
+      }
+      videoTimes = [];
     }
 
-    // Add thumbnail (seek video to time and snapshot)
-    function addThumb(video, time, type, labelTime) {
+    function addThumb(canvas, ctx, cw, ch, type, labelTime) {
+      // canvas is already showing the right frame — snapshot it
       const tc = document.createElement('canvas');
-      tc.width = CW; tc.height = CH;
-      tc.getContext('2d').drawImage(video, 0, 0, CW, CH);
-      const dataURL = tc.toDataURL('image/jpeg', 0.4);
-      tc.width = 0; tc.height = 0; // free
+      tc.width = cw; tc.height = ch;
+      tc.getContext('2d').drawImage(canvas, 0, 0);
+      const dataURL = tc.toDataURL('image/jpeg', 0.45);
+      tc.width = 0; tc.height = 0;
 
       const div = document.createElement('div');
       div.className = 'thumb-item';
@@ -471,87 +442,76 @@ runBtn.addEventListener('click', async () => {
       thumbGrid.appendChild(div);
     }
 
-    // ---- Frame-by-frame loop ----
+    // ---- Main loop ----
     for (let i = 0; i <= totalFrames; i++) {
-      const isLast = i === totalFrames;
-      const t = isLast ? duration - 0.001 : i * interval;
+      // Check abort
+      if (abortRequested) {
+        log('中止されました');
+        setProgress(progressFill.style.width.replace('%','') * 1, '中止');
+        progressLabel.textContent = '中止';
+        break;
+      }
 
-      // Yield every 10 frames to keep UI responsive
+      const isLast = i === totalFrames;
+
       if (i % 10 === 0) {
         setProgress(5 + (i / totalFrames) * 85, `解析中… ${i}/${totalFrames}`);
         await yieldFrame();
       }
 
-      let curData = null;
-      if (!isLast) {
-        curData = await seekAndCapture(video, canvas, ctx, t);
+      if (isLast) {
+        // Flush everything remaining
+        if (anchor !== null) await flushStillRun();
+        await flushVideoRun();
+        break;
       }
 
-      const diff = (prevData && curData) ? frameDiff(prevData, curData) : 0;
-      const isStill = curData && diff < diffThresh;
+      const t = i * interval;
+      const curData = await seekAndCapture(video, canvas, ctx, t);
 
-      if (!isLast && isStill) {
-        // Continuing or starting a still run
-        if (!run) {
-          // Start new still run
-          run = { count: 1, bestDiff: Infinity, bestTime: t, bestData: curData, frames: [t] };
-          // If there was a video run, the transition might not be clear yet — keep videoRun open
-        } else {
-          run.count++;
-          run.frames.push(t);
-          // Track most stable frame: diff to prev
-          if (diff < run.bestDiff) {
-            run.bestDiff = diff;
-            run.bestTime = t;
-            // No need to store bestData as pixel buffer; we'll re-seek for output
-          }
-        }
-        // Close any open video run
-        if (videoRun) {
-          await flushVideoRun(videoRun);
-          videoRun = null;
-        }
+      if (anchor === null) {
+        // Start first run
+        anchor = curData;
+        anchorTime = t;
+        runTimes = [t];
+        bestDiff = 0;
+        bestTime = t;
+        continue;
+      }
+
+      // Compare current frame against the anchor of the current run
+      const diff = frameDiff(anchor, curData);
+
+      if (diff < diffThresh) {
+        // Same slide: extend run
+        runTimes.push(t);
+        // Track most stable: smallest diff to anchor
+        if (diff < bestDiff) { bestDiff = diff; bestTime = t; }
       } else {
-        // Frame changed significantly, OR last frame
-        if (run) {
-          // Evaluate run
-          if (run.count >= minFrames) {
-            await flushStillRun(run);
-          } else {
-            // Too short → absorb into video
-            if (!videoRun) videoRun = { frames: [] };
-            videoRun.frames.push(...run.frames);
-          }
-          run = null;
-        }
-        // Accumulate into video run
-        if (!isLast) {
-          if (!videoRun) videoRun = { frames: [] };
-          videoRun.frames.push(t);
-        } else {
-          // End of video
-          if (videoRun) {
-            await flushVideoRun(videoRun);
-            videoRun = null;
-          }
-        }
-        // Start fresh still run on this frame (only if not last)
-        if (!isLast && curData) {
-          run = { count: 1, bestDiff: Infinity, bestTime: t, bestData: null, frames: [t] };
-        }
+        // Scene changed: close current run
+        // First flush any pending video segment
+        await flushVideoRun();
+        // Then flush the still run
+        await flushStillRun();
+        // Start new run with current frame as anchor
+        anchor = curData;
+        anchorTime = t;
+        runTimes = [t];
+        bestDiff = 0;
+        bestTime = t;
       }
-
-      prevData = curData;
     }
 
-    setProgress(100, '完了');
+    if (!abortRequested) setProgress(100, '完了');
 
     const sCount = extractedBlobs.filter(b => b.type === 'still').length;
     const vCount = extractedBlobs.filter(b => b.type === 'video').length;
     resultStats.innerHTML =
-      `<strong>${extractedBlobs.length}枚</strong> 抽出完了 — スライド ${sCount}枚` +
+      `<strong>${extractedBlobs.length}枚</strong> 抽出` +
+      (abortRequested ? '（中止）' : '完了') +
+      ` — スライド ${sCount}枚` +
       (vCount > 0 ? `、ビデオ区間代表 ${vCount}枚` : '');
-    log(`完了: スライド ${sCount}枚、ビデオ区間 ${videoSegCount}件`);
+    log(`スライド ${sCount}枚、ビデオ区間 ${videoSegCount}件`);
 
   } catch(e) {
     showError('エラー: ' + e.message);
@@ -560,6 +520,9 @@ runBtn.addEventListener('click', async () => {
   } finally {
     URL.revokeObjectURL(videoURL);
     runBtn.disabled = false;
+    abortBtn.classList.remove('visible');
+    abortBtn.disabled = false;
+    abortBtn.textContent = '中止';
   }
 });
 
