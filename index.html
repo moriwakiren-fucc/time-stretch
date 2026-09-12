@@ -352,45 +352,51 @@ runBtn.addEventListener('click', async () => {
     resultBox.classList.add('visible');
 
     // -----------------------------------------------------------------------
-    // Key design change:
+    // Consecutive diff (frame[i] vs frame[i-1]) with hysteresis.
     //
-    // Instead of comparing frame[i] vs frame[i-1] (consecutive diff),
-    // we compare every frame against a stable ANCHOR frame for the current run.
+    // State machine has two modes: STILL and VIDEO.
     //
-    // State:
-    //   anchor      – ImageData of the first frame of the current run
-    //   anchorTime  – timestamp of anchor
-    //   runTimes[]  – timestamps collected so far in this run
-    //   bestDiff    – smallest diff-to-anchor seen so far (→ most stable frame)
-    //   bestTime    – timestamp of most stable frame
-    //   videoTimes[]– timestamps of video-run frames pending flush
+    // In STILL mode:
+    //   - Each frame is compared to its predecessor.
+    //   - If diff < diffThresh  → still continues; reset spikeCount.
+    //   - If diff >= diffThresh → increment spikeCount.
+    //     Only when spikeCount >= HYSTERESIS do we actually end the still run.
+    //     The "spike" frames that didn't trigger are absorbed into the run
+    //     (they were noise). This prevents compression artifacts from splitting
+    //     a single slide into two.
     //
-    // A run ends when diff(anchor, curFrame) >= diffThresh.
-    // When a run ends:
-    //   - if len >= minFrames → emit as still
-    //   - else               → push into videoTimes
-    // Then start a new run with curFrame as anchor.
+    // In VIDEO mode:
+    //   - Each frame is compared to its predecessor.
+    //   - If diff < diffThresh for HYSTERESIS consecutive frames → enter STILL.
+    //   - Otherwise accumulate into videoTimes.
     //
-    // This prevents "drift" where a slow gradual change never triggers the
-    // consecutive-diff threshold but clearly differs from the original slide.
+    // bestTime tracks the frame with smallest consecutive diff (most stable).
     // -----------------------------------------------------------------------
+    const HYSTERESIS = 3; // frames that must agree before mode switches
 
-    let anchor    = null;   // ImageData (small res)
-    let anchorTime = 0;
-    let runTimes  = [];     // timestamps in current run
-    let bestDiff  = Infinity;
-    let bestTime  = 0;
+    // STILL run state
+    let stillTimes  = [];      // timestamps in current still run
+    let bestDiff    = Infinity;
+    let bestTime    = 0;
+    let spikeCount  = 0;       // consecutive high-diff frames seen while in STILL
+    let spikeTimes  = [];      // those spike frame timestamps (pending re-evaluation)
 
-    let videoTimes = [];    // timestamps of current video segment
-    let slideCount = 0;
+    // VIDEO run state
+    let videoTimes  = [];
+    let calmCount   = 0;       // consecutive low-diff frames seen while in VIDEO
+    let calmBuf     = [];      // those calm frame timestamps (pending re-evaluation)
+
+    let inStill     = false;   // current mode
+    let prevData    = null;    // previous frame ImageData
+    let prevDiff    = 0;
+
+    let slideCount    = 0;
     let videoSegCount = 0;
 
     async function flushStillRun() {
-      if (runTimes.length < minFrames) {
-        // Too short — absorb into video
-        videoTimes.push(...runTimes);
+      if (stillTimes.length < minFrames) {
+        videoTimes.push(...stillTimes);
       } else {
-        // Encode best frame at full res
         await seekAndCapture(video, canvas, ctx, bestTime);
         outCtx.drawImage(video, 0, 0, W, H);
         const blob = await canvasToBlob(outCanvas, 0.92);
@@ -398,10 +404,10 @@ runBtn.addEventListener('click', async () => {
         const num = String(slideCount).padStart(3, '0');
         const filename = `slide_${num}_t${bestTime.toFixed(2)}s.jpg`;
         extractedBlobs.push({ blob, filename, type: 'still' });
-        // Thumbnail from current video state (already seeked to bestTime)
-        addThumb(canvas, ctx, CW, CH, 'still', bestTime);
+        addThumb(canvas, CW, CH, 'still', bestTime);
       }
-      anchor = null; runTimes = []; bestDiff = Infinity; bestTime = 0;
+      stillTimes = []; bestDiff = Infinity; bestTime = 0;
+      spikeCount = 0;  spikeTimes = [];
     }
 
     async function flushVideoRun() {
@@ -415,19 +421,18 @@ runBtn.addEventListener('click', async () => {
         const num = String(extractedBlobs.length + 1).padStart(3, '0');
         const filename = `video_seg_${num}_t${midTime.toFixed(2)}s.jpg`;
         extractedBlobs.push({ blob, filename, type: 'video' });
-        addThumb(canvas, ctx, CW, CH, 'video', midTime);
+        addThumb(canvas, CW, CH, 'video', midTime);
       }
       videoTimes = [];
+      calmCount = 0; calmBuf = [];
     }
 
-    function addThumb(canvas, ctx, cw, ch, type, labelTime) {
-      // canvas is already showing the right frame — snapshot it
+    function addThumb(canvas, cw, ch, type, labelTime) {
       const tc = document.createElement('canvas');
       tc.width = cw; tc.height = ch;
       tc.getContext('2d').drawImage(canvas, 0, 0);
       const dataURL = tc.toDataURL('image/jpeg', 0.45);
       tc.width = 0; tc.height = 0;
-
       const div = document.createElement('div');
       div.className = 'thumb-item';
       const img = document.createElement('img');
@@ -444,10 +449,8 @@ runBtn.addEventListener('click', async () => {
 
     // ---- Main loop ----
     for (let i = 0; i <= totalFrames; i++) {
-      // Check abort
       if (abortRequested) {
         log('中止されました');
-        setProgress(progressFill.style.width.replace('%','') * 1, '中止');
         progressLabel.textContent = '中止';
         break;
       }
@@ -460,45 +463,74 @@ runBtn.addEventListener('click', async () => {
       }
 
       if (isLast) {
-        // Flush everything remaining
-        if (anchor !== null) await flushStillRun();
-        await flushVideoRun();
+        // Flush remaining
+        if (inStill) {
+          // Absorb any pending spikes back into still (they were noise at end)
+          stillTimes.push(...spikeTimes);
+          await flushStillRun();
+        } else {
+          // Absorb calm buffer into video (not enough to confirm still)
+          videoTimes.push(...calmBuf);
+          await flushVideoRun();
+        }
         break;
       }
 
       const t = i * interval;
       const curData = await seekAndCapture(video, canvas, ctx, t);
 
-      if (anchor === null) {
-        // Start first run
-        anchor = curData;
-        anchorTime = t;
-        runTimes = [t];
-        bestDiff = 0;
-        bestTime = t;
+      if (prevData === null) {
+        // Very first frame: enter STILL mode
+        prevData = curData;
+        inStill  = true;
+        stillTimes = [t];
+        bestDiff = 0; bestTime = t;
         continue;
       }
 
-      // Compare current frame against the anchor of the current run
-      const diff = frameDiff(anchor, curData);
+      const diff = frameDiff(prevData, curData);
+      prevData = curData;
 
-      if (diff < diffThresh) {
-        // Same slide: extend run
-        runTimes.push(t);
-        // Track most stable: smallest diff to anchor
-        if (diff < bestDiff) { bestDiff = diff; bestTime = t; }
+      if (inStill) {
+        if (diff < diffThresh) {
+          // Low diff — noise spike (if any) was false alarm: absorb spikes into still
+          stillTimes.push(...spikeTimes, t);
+          spikeCount = 0; spikeTimes = [];
+          if (diff < bestDiff) { bestDiff = diff; bestTime = t; }
+        } else {
+          // High diff — potential scene change
+          spikeCount++;
+          spikeTimes.push(t);
+          if (spikeCount >= HYSTERESIS) {
+            // Confirmed scene change: flush still, transition to VIDEO
+            // The spike frames belong to video, not still
+            await flushVideoRun(); // flush any prior video (shouldn't exist, but safe)
+            await flushStillRun();
+            inStill = false;
+            // spike frames become start of video run
+            videoTimes.push(...spikeTimes);
+            spikeCount = 0; spikeTimes = [];
+          }
+          // else: wait and see (spike frames held in spikeTimes)
+        }
       } else {
-        // Scene changed: close current run
-        // First flush any pending video segment
-        await flushVideoRun();
-        // Then flush the still run
-        await flushStillRun();
-        // Start new run with current frame as anchor
-        anchor = curData;
-        anchorTime = t;
-        runTimes = [t];
-        bestDiff = 0;
-        bestTime = t;
+        // VIDEO mode
+        if (diff < diffThresh) {
+          calmCount++;
+          calmBuf.push(t);
+          if (calmCount >= HYSTERESIS) {
+            // Confirmed still region: flush video, transition to STILL
+            await flushVideoRun();
+            inStill = true;
+            stillTimes = [...calmBuf];
+            bestDiff = 0; bestTime = calmBuf[Math.floor(calmBuf.length / 2)];
+            calmCount = 0; calmBuf = [];
+          }
+        } else {
+          // Still in video — absorb any calm buffer back into video (false alarm)
+          videoTimes.push(...calmBuf, t);
+          calmCount = 0; calmBuf = [];
+        }
       }
     }
 
