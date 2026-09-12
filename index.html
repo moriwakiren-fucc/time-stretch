@@ -19,328 +19,119 @@
     --mono: 'JetBrains Mono', 'Fira Mono', monospace;
     --sans: 'Inter', system-ui, sans-serif;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
   }
+  header { width: 100%; max-width: 760px; padding: 48px 24px 32px; }
+  h1 { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; }
+  h1 span { color: var(--accent); }
+  .sub { margin-top: 8px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+  main { width: 100%; max-width: 760px; padding: 0 24px 64px; display: flex; flex-direction: column; gap: 20px; }
 
-  header {
-    width: 100%;
-    max-width: 760px;
-    padding: 48px 24px 32px;
-  }
-
-  h1 {
-    font-size: 1.7rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-
-  h1 span {
-    color: var(--accent);
-  }
-
-  .sub {
-    margin-top: 8px;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  main {
-    width: 100%;
-    max-width: 760px;
-    padding: 0 24px 64px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  /* Drop zone */
   .dropzone {
-    border: 1.5px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 48px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    position: relative;
+    border: 1.5px dashed var(--border); border-radius: var(--radius);
+    padding: 48px 24px; text-align: center; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s; position: relative;
   }
-  .dropzone:hover, .dropzone.drag-over {
-    border-color: var(--accent);
-    background: rgba(124,109,250,0.05);
-  }
-  .dropzone input {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-  }
-  .dropzone-icon {
-    font-size: 2rem;
-    margin-bottom: 12px;
-    opacity: 0.5;
-  }
-  .dropzone-label {
-    font-size: 0.95rem;
-    color: var(--text-dim);
-  }
-  .dropzone-label strong {
-    color: var(--accent);
-    font-weight: 500;
-  }
-  .file-chosen {
-    margin-top: 8px;
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    font-family: var(--mono);
-  }
+  .dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: rgba(124,109,250,0.05); }
+  .dropzone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .dropzone-icon { font-size: 2rem; margin-bottom: 12px; opacity: 0.5; }
+  .dropzone-label { font-size: 0.95rem; color: var(--text-dim); }
+  .dropzone-label strong { color: var(--accent); font-weight: 500; }
+  .file-chosen { margin-top: 8px; font-size: 0.8rem; color: var(--text-dim); font-family: var(--mono); }
 
-  /* Settings panel */
   .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 16px;
   }
-
   .panel-title {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 12px;
-    margin-bottom: 2px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-dim);
+    border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 2px;
   }
-
-  .setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .setting-label {
-    font-size: 0.875rem;
-    color: var(--text);
-    flex: 1;
-    min-width: 0;
-  }
-
-  .setting-desc {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-top: 2px;
-    line-height: 1.4;
-  }
-
-  .setting-control {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-
+  .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .setting-label { font-size: 0.875rem; color: var(--text); flex: 1; min-width: 0; }
+  .setting-desc { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; line-height: 1.4; }
+  .setting-control { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   input[type="range"] {
-    -webkit-appearance: none;
-    width: 120px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none;
+    -webkit-appearance: none; width: 120px; height: 4px;
+    background: var(--border); border-radius: 2px; outline: none;
   }
   input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px; height: 14px;
-    background: var(--accent);
-    border-radius: 50%;
-    cursor: pointer;
+    -webkit-appearance: none; width: 14px; height: 14px;
+    background: var(--accent); border-radius: 50%; cursor: pointer;
   }
-
-  .range-val {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--accent);
-    min-width: 36px;
-    text-align: right;
-  }
-
-  /* Radio group */
-  .radio-group {
-    display: flex;
-    gap: 8px;
-  }
+  .range-val { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); min-width: 36px; text-align: right; }
+  .radio-group { display: flex; gap: 8px; }
   .radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    padding: 5px 12px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    transition: border-color 0.12s, background 0.12s;
+    display: flex; align-items: center; gap: 6px; font-size: 0.85rem;
+    cursor: pointer; padding: 5px 12px; border: 1px solid var(--border);
+    border-radius: 4px; transition: border-color 0.12s, background 0.12s;
   }
   .radio-group input[type="radio"] { display: none; }
-  .radio-group label:has(input:checked) {
-    border-color: var(--accent);
-    background: rgba(124,109,250,0.12);
-    color: var(--accent);
-  }
+  .radio-group label:has(input:checked) { border-color: var(--accent); background: rgba(124,109,250,0.12); color: var(--accent); }
 
-  /* Run button */
   .run-btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 13px 28px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    align-self: flex-start;
+    background: var(--accent); color: #fff; border: none; border-radius: var(--radius);
+    padding: 13px 28px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s; align-self: flex-start;
   }
   .run-btn:hover:not(:disabled) { opacity: 0.88; }
   .run-btn:active:not(:disabled) { transform: scale(0.98); }
   .run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-  /* Progress */
   .progress-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    display: none;
-    flex-direction: column;
-    gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    display: none; flex-direction: column; gap: 10px;
   }
   .progress-box.visible { display: flex; }
-
-  .progress-bar-wrap {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    width: 0%;
-    transition: width 0.2s;
-  }
-
+  .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.2s; }
   .progress-log {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    line-height: 1.5;
-    max-height: 80px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
+    font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+    line-height: 1.5; max-height: 80px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;
   }
+  .progress-status { font-size: 0.82rem; color: var(--text-dim); }
+  .progress-status strong { color: var(--text); font-family: var(--mono); }
 
-  .progress-status {
-    font-size: 0.82rem;
-    color: var(--text-dim);
-  }
-  .progress-status strong {
-    color: var(--text);
-    font-family: var(--mono);
-  }
-
-  /* Results */
-  .result-box {
-    display: none;
-    flex-direction: column;
-    gap: 16px;
-  }
+  .result-box { display: none; flex-direction: column; gap: 16px; }
   .result-box.visible { display: flex; }
+  .result-stats { font-size: 0.85rem; color: var(--text-dim); }
+  .result-stats strong { color: var(--text); }
 
-  .result-stats {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-  }
-  .result-stats strong {
-    color: var(--text);
-  }
-
-  .thumb-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 8px;
-  }
-
-  .thumb-item {
-    position: relative;
-    aspect-ratio: 16/9;
-    background: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .thumb-item img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+  .thumb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  .thumb-item { position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .thumb-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .thumb-item .thumb-label {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: rgba(0,0,0,0.65);
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    color: #ccc;
-    padding: 2px 5px;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.65); font-family: var(--mono);
+    font-size: 0.6rem; color: #ccc; padding: 2px 5px;
   }
   .thumb-item .thumb-badge {
-    position: absolute;
-    top: 4px; right: 4px;
-    font-size: 0.55rem;
-    font-weight: 600;
-    padding: 1px 5px;
-    border-radius: 2px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    position: absolute; top: 4px; right: 4px; font-size: 0.55rem;
+    font-weight: 600; padding: 1px 5px; border-radius: 2px;
+    letter-spacing: 0.04em; text-transform: uppercase;
   }
   .badge-still { background: var(--accent-dim); color: var(--accent); }
   .badge-video { background: rgba(80,80,80,0.8); color: #aaa; }
 
   .dl-btn {
-    background: var(--success);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 12px 24px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    align-self: flex-start;
+    background: var(--success); color: #fff; border: none; border-radius: var(--radius);
+    padding: 12px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    transition: opacity 0.15s; align-self: flex-start;
   }
-  .dl-btn:hover { opacity: 0.88; }
+  .dl-btn:hover:not(:disabled) { opacity: 0.88; }
+  .dl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
   .error-box {
-    display: none;
-    background: rgba(224,92,92,0.1);
-    border: 1px solid var(--danger);
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    font-size: 0.85rem;
-    color: var(--danger);
-    line-height: 1.5;
+    display: none; background: rgba(224,92,92,0.1); border: 1px solid var(--danger);
+    border-radius: var(--radius); padding: 14px 18px; font-size: 0.85rem;
+    color: var(--danger); line-height: 1.5;
   }
   .error-box.visible { display: block; }
 
@@ -352,15 +143,11 @@
 </style>
 </head>
 <body>
-
 <header>
   <h1>スライド<span>抽出</span></h1>
-  <p class="sub">動画内の静止画スライドを1枚ずつ検出してJPEGで保存します。<br>処理はすべてブラウザ内で完結します。</p>
+  <p class="sub">動画内の静止画スライドを1枚ずつ検出してJPEGで保存します。処理はすべてブラウザ内で完結します。</p>
 </header>
-
 <main>
-
-  <!-- Drop zone -->
   <div class="dropzone" id="dropzone">
     <input type="file" id="fileInput" accept="video/*">
     <div class="dropzone-icon">▶</div>
@@ -368,21 +155,18 @@
     <div class="file-chosen" id="fileChosen"></div>
   </div>
 
-  <!-- Settings -->
   <div class="panel">
     <div class="panel-title">検出設定</div>
-
     <div class="setting-row">
       <div class="setting-label">
         フレーム差分閾値
-        <div class="setting-desc">この値より差分が小さいフレームを「同一スライド」とみなします</div>
+        <div class="setting-desc">この値より差分が小さければ「同一スライド」とみなします（大きくすると寛容）</div>
       </div>
       <div class="setting-control">
         <input type="range" id="threshSlider" min="1" max="30" value="8" step="1">
         <span class="range-val" id="threshVal">8</span>
       </div>
     </div>
-
     <div class="setting-row">
       <div class="setting-label">
         最小持続フレーム数
@@ -393,7 +177,6 @@
         <span class="range-val" id="minFramesVal">10</span>
       </div>
     </div>
-
     <div class="setting-row">
       <div class="setting-label">
         解析フレームレート
@@ -404,11 +187,10 @@
         <span class="range-val" id="fpsVal">5</span>
       </div>
     </div>
-
     <div class="setting-row">
       <div class="setting-label">
         ビデオ区間の扱い
-        <div class="setting-desc">毎フレーム変化する部分（アニメーション・実写など）をどう扱うか</div>
+        <div class="setting-desc">毎フレーム変化する部分（アニメーション・実写など）の処理</div>
       </div>
       <div class="setting-control">
         <div class="radio-group">
@@ -421,30 +203,22 @@
 
   <button class="run-btn" id="runBtn" disabled>抽出を開始</button>
 
-  <!-- Progress -->
   <div class="progress-box" id="progressBox">
     <div class="progress-status">処理中… <strong id="progressLabel">準備中</strong></div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progressFill"></div>
-    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
     <div class="progress-log" id="progressLog"></div>
   </div>
 
-  <!-- Error -->
   <div class="error-box" id="errorBox"></div>
 
-  <!-- Results -->
   <div class="result-box" id="resultBox">
     <div class="result-stats" id="resultStats"></div>
     <div class="thumb-grid" id="thumbGrid"></div>
     <button class="dl-btn" id="dlBtn">ZIPでダウンロード</button>
   </div>
-
 </main>
 
-<!-- JSZip CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
 <script>
 // ---- UI refs ----
 const dropzone      = document.getElementById('dropzone');
@@ -468,330 +242,323 @@ const minFramesVal    = document.getElementById('minFramesVal');
 const fpsSlider       = document.getElementById('fpsSlider');
 const fpsVal          = document.getElementById('fpsVal');
 
-// Slider labels
 threshSlider.addEventListener('input',    () => threshVal.textContent    = threshSlider.value);
 minFramesSlider.addEventListener('input', () => minFramesVal.textContent = minFramesSlider.value);
 fpsSlider.addEventListener('input',       () => fpsVal.textContent       = fpsSlider.value);
 
-// ---- File selection ----
+// ---- File ----
 let selectedFile = null;
-
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
 dropzone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropzone.classList.remove('drag-over');
+  e.preventDefault(); dropzone.classList.remove('drag-over');
   const f = e.dataTransfer.files[0];
   if (f && f.type.startsWith('video/')) setFile(f);
 });
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
-
 function setFile(f) {
   selectedFile = f;
   fileChosen.textContent = f.name + '  (' + (f.size / 1024 / 1024).toFixed(1) + ' MB)';
   runBtn.disabled = false;
-  hideResults();
+  hideAll();
 }
 
-// ---- Settings read ----
 function getSettings() {
   return {
-    diffThresh:  Number(threshSlider.value),
-    minFrames:   Number(minFramesSlider.value),
-    fps:         Number(fpsSlider.value),
-    videoMode:   document.querySelector('input[name="videoMode"]:checked').value
+    diffThresh: Number(threshSlider.value),
+    minFrames:  Number(minFramesSlider.value),
+    fps:        Number(fpsSlider.value),
+    videoMode:  document.querySelector('input[name="videoMode"]:checked').value
   };
 }
 
-// ---- Helpers ----
 function log(msg) {
   progressLog.textContent += msg + '\n';
   progressLog.scrollTop = progressLog.scrollHeight;
 }
-
 function setProgress(pct, label) {
   progressFill.style.width = pct + '%';
   if (label) progressLabel.textContent = label;
 }
-
 function showError(msg) {
   errorBox.textContent = msg;
   errorBox.classList.add('visible');
 }
-
-function hideResults() {
+function hideAll() {
   resultBox.classList.remove('visible');
   progressBox.classList.remove('visible');
   errorBox.classList.remove('visible');
   thumbGrid.innerHTML = '';
   progressLog.textContent = '';
   setProgress(0);
+  extractedBlobs = [];
 }
 
-// ---- Frame extraction via Canvas ----
-async function extractFrames(videoEl, fps, onProgress) {
-  return new Promise((resolve, reject) => {
-    const duration = videoEl.duration;
-    if (!isFinite(duration) || duration <= 0) { reject(new Error('動画の長さを取得できません')); return; }
-
-    const interval = 1 / fps;
-    const total = Math.floor(duration * fps);
-    const canvas = document.createElement('canvas');
-    const ctx    = canvas.getContext('2d', { willReadFrequently: true });
-    const frames = [];
-    let idx = 0;
-
-    canvas.width  = videoEl.videoWidth  || 640;
-    canvas.height = videoEl.videoHeight || 360;
-
-    function seekNext() {
-      if (idx > total) { resolve(frames); return; }
-      const t = idx * interval;
-      videoEl.currentTime = Math.min(t, duration - 0.001);
-    }
-
-    videoEl.addEventListener('seeked', function onSeeked() {
-      try {
-        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        frames.push({ time: videoEl.currentTime, data: imageData, idx });
-        onProgress(idx / total);
-        idx++;
-        if (idx > total) {
-          videoEl.removeEventListener('seeked', onSeeked);
-          resolve(frames);
-        } else {
-          seekNext();
-        }
-      } catch(e) {
-        videoEl.removeEventListener('seeked', onSeeked);
-        reject(e);
-      }
-    });
-
-    videoEl.currentTime = 0;
-  });
-}
-
-// ---- Frame diff (mean absolute diff of luma) ----
+// ---- Luma diff between two ImageData (sampled) ----
 function frameDiff(a, b) {
-  const da = a.data, db = b.data;
-  const len = da.length;
-  let sum = 0;
-  const step = 4 * 4; // sample every 4th pixel for speed
-  let count = 0;
-  for (let i = 0; i < len; i += step) {
-    const la = 0.299 * da[i] + 0.587 * da[i+1] + 0.114 * da[i+2];
-    const lb = 0.299 * db[i] + 0.587 * db[i+1] + 0.114 * db[i+2];
+  const da = a.data, db = b.data, len = da.length;
+  let sum = 0, count = 0;
+  // sample every 8th pixel for speed (stride=32 bytes)
+  for (let i = 0; i < len; i += 32) {
+    const la = 0.299*da[i] + 0.587*da[i+1] + 0.114*da[i+2];
+    const lb = 0.299*db[i] + 0.587*db[i+1] + 0.114*db[i+2];
     sum += Math.abs(la - lb);
     count++;
   }
   return sum / count;
 }
 
-// ---- Scene segmentation ----
-// Returns array of segments: { type:'still'|'video', frames: [...], representativeIdx }
-function segmentFrames(frames, diffThresh, minFrames) {
-  if (frames.length === 0) return [];
-
-  // Compute diffs between consecutive frames
-  const diffs = [0]; // diff[0] = 0 (no predecessor)
-  for (let i = 1; i < frames.length; i++) {
-    diffs.push(frameDiff(frames[i-1].data, frames[i].data));
-  }
-
-  // Group consecutive frames into runs where diff < threshold
-  const segments = [];
-  let runStart = 0;
-
-  for (let i = 1; i <= frames.length; i++) {
-    const isEnd = i === frames.length;
-    const changed = !isEnd && diffs[i] >= diffThresh;
-
-    if (changed || isEnd) {
-      const run = frames.slice(runStart, i);
-      const runDiffs = diffs.slice(runStart, i);
-      segments.push({ frames: run, diffs: runDiffs, startIdx: runStart });
-      runStart = i;
-    }
-  }
-
-  // Classify segments: if run length >= minFrames → still, else → video part
-  // Merge adjacent short runs into video segments
-  const classified = [];
-  let i = 0;
-  while (i < segments.length) {
-    const seg = segments[i];
-    if (seg.frames.length >= minFrames) {
-      // Still image segment
-      // Representative = frame with smallest sum of diff to neighbors within the run
-      const rep = findStableFrame(seg.frames);
-      classified.push({ type: 'still', frames: seg.frames, representative: rep });
-      i++;
-    } else {
-      // Video segment: merge consecutive short runs
-      let videoFrames = [...seg.frames];
-      i++;
-      while (i < segments.length && segments[i].frames.length < minFrames) {
-        videoFrames = videoFrames.concat(segments[i].frames);
-        i++;
-      }
-      // Representative = middle frame
-      const mid = videoFrames[Math.floor(videoFrames.length / 2)];
-      classified.push({ type: 'video', frames: videoFrames, representative: mid });
-    }
-  }
-
-  return classified;
+// ---- Seek video to time, return ImageData ----
+function seekAndCapture(video, canvas, ctx, time) {
+  return new Promise((resolve, reject) => {
+    const onSeeked = () => {
+      video.removeEventListener('seeked', onSeeked);
+      video.removeEventListener('error', onError);
+      try {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      } catch(e) { reject(e); }
+    };
+    const onError = (e) => {
+      video.removeEventListener('seeked', onSeeked);
+      video.removeEventListener('error', onError);
+      reject(new Error('シーク失敗'));
+    };
+    video.addEventListener('seeked', onSeeked, { once: true });
+    video.addEventListener('error',  onError,  { once: true });
+    video.currentTime = Math.max(0, Math.min(time, video.duration - 0.001));
+  });
 }
 
-// Among a run of frames, find the one with lowest mean diff to both neighbors
-function findStableFrame(frames) {
-  if (frames.length === 1) return frames[0];
-  if (frames.length === 2) return frames[0];
-
-  let bestScore = Infinity;
-  let bestFrame = frames[Math.floor(frames.length / 2)];
-
-  for (let i = 1; i < frames.length - 1; i++) {
-    const d1 = frameDiff(frames[i-1].data, frames[i].data);
-    const d2 = frameDiff(frames[i].data,   frames[i+1].data);
-    const score = d1 + d2;
-    if (score < bestScore) { bestScore = score; bestFrame = frames[i]; }
-  }
-  return bestFrame;
+// ---- Canvas → JPEG Blob ----
+function canvasToBlob(canvas, quality) {
+  return new Promise(res => canvas.toBlob(res, 'image/jpeg', quality ?? 0.92));
 }
 
-// ---- ImageData → JPEG blob via Canvas ----
-function imageDataToJpegBlob(imageData, quality = 0.92) {
-  const c = document.createElement('canvas');
-  c.width  = imageData.width;
-  c.height = imageData.height;
-  c.getContext('2d').putImageData(imageData, 0, 0);
-  return new Promise(res => c.toBlob(res, 'image/jpeg', quality));
+// ---- Yield to browser (prevent UI freeze) ----
+function yieldFrame() {
+  return new Promise(r => setTimeout(r, 0));
 }
 
-// ---- Thumbnail ----
-function imageDataToDataURL(imageData) {
-  const c = document.createElement('canvas');
-  c.width  = imageData.width;
-  c.height = imageData.height;
-  c.getContext('2d').putImageData(imageData, 0, 0);
-  return c.toDataURL('image/jpeg', 0.5);
-}
-
-// ---- Main flow ----
-let extractedBlobs = []; // { blob, filename, type }
+// ---- Main extraction (streaming, low memory) ----
+let extractedBlobs = [];
 
 runBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
-  hideResults();
+  hideAll();
   extractedBlobs = [];
 
   const { diffThresh, minFrames, fps, videoMode } = getSettings();
 
   progressBox.classList.add('visible');
   runBtn.disabled = true;
-  log('動画を読み込み中…');
-  setProgress(2, '動画ロード中');
+
+  const videoURL = URL.createObjectURL(selectedFile);
 
   try {
-    // Create video element
-    const url = URL.createObjectURL(selectedFile);
+    // Load video metadata
+    log('動画を読み込み中…');
+    setProgress(2, '動画ロード中');
+
     const video = document.createElement('video');
-    video.src = url;
+    video.src = videoURL;
     video.muted = true;
     video.playsInline = true;
-    video.preload = 'auto';
+    video.preload = 'metadata';
 
     await new Promise((res, rej) => {
       video.addEventListener('loadedmetadata', res, { once: true });
-      video.addEventListener('error', () => rej(new Error('動画の読み込みに失敗しました')), { once: true });
+      video.addEventListener('error', () => rej(new Error('動画を読み込めませんでした')), { once: true });
       video.load();
     });
 
     const duration = video.duration;
-    log(`動画長: ${duration.toFixed(1)}秒  解像度: ${video.videoWidth}×${video.videoHeight}`);
-    log(`解析FPS: ${fps}  → 約${Math.floor(duration * fps)}フレームを取得`);
-    setProgress(5, 'フレーム取得中');
+    const W = video.videoWidth  || 640;
+    const H = video.videoHeight || 360;
+    // Scale down canvas for analysis (cap at 480px wide) to save memory
+    const SCALE = Math.min(1, 480 / W);
+    const CW = Math.round(W * SCALE);
+    const CH = Math.round(H * SCALE);
 
-    // Extract frames
-    const frames = await extractFrames(video, fps, (p) => {
-      setProgress(5 + p * 55, `フレーム取得中… ${(p*100).toFixed(0)}%`);
-    });
+    const totalFrames = Math.floor(duration * fps);
+    const interval = 1 / fps;
 
-    log(`${frames.length}フレーム取得完了`);
-    setProgress(60, 'シーン検出中');
+    log(`動画長: ${duration.toFixed(1)}s  元解像度: ${W}×${H}`);
+    log(`解析解像度: ${CW}×${CH}  FPS: ${fps}  総フレーム数: ${totalFrames}`);
 
-    URL.revokeObjectURL(url);
+    // Working canvas (analysis + capture)
+    const canvas = document.createElement('canvas');
+    canvas.width = CW; canvas.height = CH;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-    // Segment
-    const segments = segmentFrames(frames, diffThresh, minFrames);
-    const stillSegs = segments.filter(s => s.type === 'still');
-    const videoSegs = segments.filter(s => s.type === 'video');
+    // Full-res canvas for JPEG output
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = W; outCanvas.height = H;
+    const outCtx = outCanvas.getContext('2d');
 
-    log(`スライド区間: ${stillSegs.length}件  ビデオ区間: ${videoSegs.length}件`);
+    setProgress(5, 'フレーム解析中');
+    resultBox.classList.add('visible');
 
-    // Build output list
-    const outputSegs = [];
-    for (const seg of segments) {
-      if (seg.type === 'still') {
-        outputSegs.push(seg);
-      } else {
-        if (videoMode === 'one') outputSegs.push(seg);
-        // else skip
-      }
+    // ---- Streaming state machine ----
+    // We process one frame at a time; only keep:
+    //   prevData      – previous frame's ImageData (small, analysis res)
+    //   run           – current run state
+    //   bestFrame     – best representative data so far (in current run)
+    //
+    // When a run ends we immediately encode to JPEG and discard pixel data.
+
+    let prevData = null;
+
+    // Current still run accumulator
+    let run = null;
+    // { count, sumDiff, bestDiff, bestTime, bestData(ImageData@analysis-res) }
+
+    // Current video run accumulator
+    let videoRun = null;
+    // { count, midTime, frames[] } — we only keep midTime, not pixel data
+
+    let slideCount = 0;
+    let videoSegCount = 0;
+
+    // Flush a completed still run → encode & emit thumb
+    async function flushStillRun(r) {
+      if (r.count < minFrames) return null; // too short → treat as video below
+      // Seek to best time and capture at full res
+      await seekAndCapture(video, canvas, ctx, r.bestTime); // update small canvas (don't need it)
+      outCtx.drawImage(video, 0, 0, W, H);
+      const blob = await canvasToBlob(outCanvas, 0.92);
+      slideCount++;
+      const num = String(slideCount).padStart(3, '0');
+      const filename = `slide_${num}_t${r.bestTime.toFixed(2)}s.jpg`;
+      extractedBlobs.push({ blob, filename, type: 'still' });
+      addThumb(video, r.bestTime, 'still', r.bestTime);
+      return filename;
     }
 
-    log(`出力対象: ${outputSegs.length}枚`);
-    setProgress(65, 'JPEG変換中');
+    // Flush a video segment → optionally encode 1 frame
+    async function flushVideoRun(vr) {
+      videoSegCount++;
+      if (videoMode === 'skip') return;
+      const midTime = vr.frames[Math.floor(vr.frames.length / 2)];
+      await seekAndCapture(video, canvas, ctx, midTime);
+      outCtx.drawImage(video, 0, 0, W, H);
+      const blob = await canvasToBlob(outCanvas, 0.92);
+      const num = String(extractedBlobs.length + 1).padStart(3, '0');
+      const filename = `video_seg_${num}_t${midTime.toFixed(2)}s.jpg`;
+      extractedBlobs.push({ blob, filename, type: 'video' });
+      addThumb(video, midTime, 'video', midTime);
+    }
 
-    // Convert to blobs
-    thumbGrid.innerHTML = '';
-    for (let i = 0; i < outputSegs.length; i++) {
-      const seg = outputSegs[i];
-      const rep = seg.representative;
-      const blob = await imageDataToJpegBlob(rep.data);
-      const num  = String(i + 1).padStart(3, '0');
-      const filename = `slide_${num}_t${rep.time.toFixed(2)}s.jpg`;
+    // Add thumbnail (seek video to time and snapshot)
+    function addThumb(video, time, type, labelTime) {
+      const tc = document.createElement('canvas');
+      tc.width = CW; tc.height = CH;
+      tc.getContext('2d').drawImage(video, 0, 0, CW, CH);
+      const dataURL = tc.toDataURL('image/jpeg', 0.4);
+      tc.width = 0; tc.height = 0; // free
 
-      extractedBlobs.push({ blob, filename, type: seg.type });
-
-      // Thumbnail
       const div = document.createElement('div');
       div.className = 'thumb-item';
       const img = document.createElement('img');
-      img.src = imageDataToDataURL(rep.data);
+      img.src = dataURL;
       const badge = document.createElement('div');
-      badge.className = 'thumb-badge ' + (seg.type === 'still' ? 'badge-still' : 'badge-video');
-      badge.textContent = seg.type === 'still' ? 'slide' : 'video';
-      const label = document.createElement('div');
-      label.className = 'thumb-label';
-      label.textContent = rep.time.toFixed(1) + 's';
-      div.appendChild(img);
-      div.appendChild(badge);
-      div.appendChild(label);
+      badge.className = 'thumb-badge ' + (type === 'still' ? 'badge-still' : 'badge-video');
+      badge.textContent = type === 'still' ? 'slide' : 'video';
+      const lbl = document.createElement('div');
+      lbl.className = 'thumb-label';
+      lbl.textContent = labelTime.toFixed(1) + 's';
+      div.appendChild(img); div.appendChild(badge); div.appendChild(lbl);
       thumbGrid.appendChild(div);
+    }
 
-      setProgress(65 + (i / outputSegs.length) * 30, `変換中 ${i+1}/${outputSegs.length}`);
+    // ---- Frame-by-frame loop ----
+    for (let i = 0; i <= totalFrames; i++) {
+      const isLast = i === totalFrames;
+      const t = isLast ? duration - 0.001 : i * interval;
+
+      // Yield every 10 frames to keep UI responsive
+      if (i % 10 === 0) {
+        setProgress(5 + (i / totalFrames) * 85, `解析中… ${i}/${totalFrames}`);
+        await yieldFrame();
+      }
+
+      let curData = null;
+      if (!isLast) {
+        curData = await seekAndCapture(video, canvas, ctx, t);
+      }
+
+      const diff = (prevData && curData) ? frameDiff(prevData, curData) : 0;
+      const isStill = curData && diff < diffThresh;
+
+      if (!isLast && isStill) {
+        // Continuing or starting a still run
+        if (!run) {
+          // Start new still run
+          run = { count: 1, bestDiff: Infinity, bestTime: t, bestData: curData, frames: [t] };
+          // If there was a video run, the transition might not be clear yet — keep videoRun open
+        } else {
+          run.count++;
+          run.frames.push(t);
+          // Track most stable frame: diff to prev
+          if (diff < run.bestDiff) {
+            run.bestDiff = diff;
+            run.bestTime = t;
+            // No need to store bestData as pixel buffer; we'll re-seek for output
+          }
+        }
+        // Close any open video run
+        if (videoRun) {
+          await flushVideoRun(videoRun);
+          videoRun = null;
+        }
+      } else {
+        // Frame changed significantly, OR last frame
+        if (run) {
+          // Evaluate run
+          if (run.count >= minFrames) {
+            await flushStillRun(run);
+          } else {
+            // Too short → absorb into video
+            if (!videoRun) videoRun = { frames: [] };
+            videoRun.frames.push(...run.frames);
+          }
+          run = null;
+        }
+        // Accumulate into video run
+        if (!isLast) {
+          if (!videoRun) videoRun = { frames: [] };
+          videoRun.frames.push(t);
+        } else {
+          // End of video
+          if (videoRun) {
+            await flushVideoRun(videoRun);
+            videoRun = null;
+          }
+        }
+        // Start fresh still run on this frame (only if not last)
+        if (!isLast && curData) {
+          run = { count: 1, bestDiff: Infinity, bestTime: t, bestData: null, frames: [t] };
+        }
+      }
+
+      prevData = curData;
     }
 
     setProgress(100, '完了');
 
-    const stillCount = extractedBlobs.filter(b => b.type === 'still').length;
-    const videoCount = extractedBlobs.filter(b => b.type === 'video').length;
+    const sCount = extractedBlobs.filter(b => b.type === 'still').length;
+    const vCount = extractedBlobs.filter(b => b.type === 'video').length;
     resultStats.innerHTML =
-      `<strong>${extractedBlobs.length}枚</strong> 抽出完了 — スライド ${stillCount}枚` +
-      (videoCount > 0 ? `、ビデオ区間代表 ${videoCount}枚` : '');
+      `<strong>${extractedBlobs.length}枚</strong> 抽出完了 — スライド ${sCount}枚` +
+      (vCount > 0 ? `、ビデオ区間代表 ${vCount}枚` : '');
+    log(`完了: スライド ${sCount}枚、ビデオ区間 ${videoSegCount}件`);
 
-    resultBox.classList.add('visible');
-    log('完了');
-
-  } catch (e) {
+  } catch(e) {
     showError('エラー: ' + e.message);
     log('エラー: ' + e.message);
     console.error(e);
   } finally {
+    URL.revokeObjectURL(videoURL);
     runBtn.disabled = false;
   }
 });
@@ -801,12 +568,9 @@ dlBtn.addEventListener('click', async () => {
   if (extractedBlobs.length === 0) return;
   dlBtn.disabled = true;
   dlBtn.textContent = 'ZIP作成中…';
-
   try {
     const zip = new JSZip();
-    for (const { blob, filename } of extractedBlobs) {
-      zip.file(filename, blob);
-    }
+    for (const { blob, filename } of extractedBlobs) zip.file(filename, blob);
     const content = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(content);
