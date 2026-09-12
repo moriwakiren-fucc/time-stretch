@@ -87,17 +87,55 @@
   .error-box { display: none; background: rgba(224,92,92,0.1); border: 1px solid var(--danger); border-radius: var(--radius); padding: 14px 18px; font-size: 0.85rem; color: var(--danger); line-height: 1.5; }
   .error-box.visible { display: block; }
 
+  /* Mode tabs */
+  .mode-tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; }
+  .mode-tab { flex: 1; text-align: center; padding: 10px 14px; border-radius: 4px; font-size: 0.88rem; font-weight: 600; color: var(--text-dim); cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: transparent; }
+  .mode-tab.active { background: var(--accent-dim); color: var(--accent); }
+  .mode-section { display: none; flex-direction: column; gap: 20px; }
+  .mode-section.active { display: flex; }
+
+  /* Manual frame picker */
+  .manual-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .manual-controls .setting-control { gap: 10px; }
+  .gen-btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 11px 22px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .gen-btn:hover:not(:disabled) { opacity: 0.88; }
+  .gen-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .manual-toolbar { display: none; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-dim); }
+  .manual-toolbar.visible { display: flex; }
+  .manual-toolbar .sel-count { color: var(--text); font-family: var(--mono); }
+  .manual-toolbar .sel-count strong { color: var(--accent); }
+  .toolbar-actions { display: flex; gap: 8px; }
+  .toolbar-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 4px; padding: 6px 12px; font-size: 0.78rem; cursor: pointer; transition: border-color 0.12s, color 0.12s; }
+  .toolbar-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .frame-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+  .frame-grid.visible { display: grid; }
+  .frame-item { position: relative; aspect-ratio: 16/9; background: var(--border); border-radius: 5px; overflow: hidden; cursor: pointer; border: 3px solid transparent; transition: border-color 0.12s, transform 0.08s, box-shadow 0.12s; }
+  .frame-item:hover { border-color: rgba(124,109,250,0.5); }
+  .frame-item.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(124,109,250,0.35), 0 4px 14px rgba(124,109,250,0.35); transform: scale(0.98); }
+  .frame-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .frame-item .frame-time { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.65); font-family: var(--mono); font-size: 0.62rem; color: #ddd; padding: 3px 6px; pointer-events: none; }
+  .frame-item .frame-check { position: absolute; top: 5px; right: 5px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 0.7rem; font-weight: 700; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+  .frame-item.selected .frame-check { display: flex; }
+  .frame-item.selected::after { content: ''; position: absolute; inset: 0; background: rgba(124,109,250,0.12); pointer-events: none; }
+  .frame-item .frame-number { position: absolute; top: 5px; left: 5px; font-family: var(--mono); font-size: 0.6rem; color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.5); padding: 1px 5px; border-radius: 3px; pointer-events: none; }
+
+  .manual-empty { font-size: 0.85rem; color: var(--text-dim); text-align: center; padding: 24px 0; }
+
   @media (max-width: 500px) {
     h1 { font-size: 1.3rem; }
     .setting-row { flex-direction: column; align-items: flex-start; gap: 8px; }
     input[type="range"] { width: 100%; }
+    .manual-controls { flex-direction: column; align-items: stretch; }
+    .manual-toolbar { flex-direction: column; align-items: stretch; }
   }
 </style>
 </head>
 <body>
 <header>
   <h1>スライド<span>抽出</span></h1>
-  <p class="sub">動画内の静止画スライドを1枚ずつ検出してJPEGで保存します。処理はすべてブラウザ内で完結します。</p>
+  <p class="sub">動画内の静止画スライドを検出、または好きなフレームを手動で選んでJPEGで保存します。処理はすべてブラウザ内で完結します。</p>
 </header>
 <main>
   <div class="dropzone" id="dropzone">
@@ -107,6 +145,13 @@
     <div class="file-chosen" id="fileChosen"></div>
   </div>
 
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="tabAuto" type="button">自動抽出</button>
+    <button class="mode-tab" id="tabManual" type="button">代表フレーム抽出（手動選択）</button>
+  </div>
+
+  <!-- ================= AUTO MODE ================= -->
+  <div class="mode-section active" id="sectionAuto">
   <div class="panel">
     <div class="panel-title">検出設定</div>
     <div class="setting-row">
@@ -171,6 +216,44 @@
     <div class="thumb-grid" id="thumbGrid"></div>
     <button class="dl-btn" id="dlBtn">ZIPでダウンロード</button>
   </div>
+  </div><!-- /sectionAuto -->
+
+  <!-- ================= MANUAL MODE ================= -->
+  <div class="mode-section" id="sectionManual">
+    <div class="panel">
+      <div class="panel-title">フレーム一覧の生成</div>
+      <div class="manual-controls">
+        <div class="setting-control">
+          <span class="setting-label" style="flex:none;">サムネイル間隔</span>
+          <input type="range" id="manualIntervalSlider" min="0.1" max="10" value="1" step="0.1" style="width:140px;">
+          <span class="range-val" id="manualIntervalVal">1.0秒</span>
+        </div>
+        <button class="gen-btn" id="genFramesBtn" disabled>フレーム一覧を生成</button>
+      </div>
+      <div class="setting-desc">指定した間隔で動画から静止画を切り出し、下に一覧表示します。気に入ったフレームをクリックして選択してください（複数選択可）。</div>
+    </div>
+
+    <div class="progress-box" id="manualProgressBox">
+      <div class="progress-status">サムネイル生成中… <strong id="manualProgressLabel">準備中</strong></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="manualProgressFill"></div></div>
+    </div>
+
+    <div class="error-box" id="manualErrorBox"></div>
+
+    <div class="manual-toolbar" id="manualToolbar">
+      <div class="sel-count"><strong id="selCountNum">0</strong>枚 選択中 / 全<span id="totalFrameNum">0</span>枚</div>
+      <div class="toolbar-actions">
+        <button class="toolbar-btn" id="selectAllBtn" type="button">すべて選択</button>
+        <button class="toolbar-btn" id="clearSelBtn" type="button">選択解除</button>
+      </div>
+    </div>
+
+    <div class="frame-grid" id="frameGrid"></div>
+    <div class="manual-empty" id="manualEmpty">動画を選択し、「フレーム一覧を生成」を押してください。</div>
+
+    <button class="dl-btn" id="manualDlBtn" style="display:none;">選択したフレームをZIPでダウンロード</button>
+  </div>
+  <!-- /sectionManual -->
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -200,6 +283,21 @@ threshSlider.addEventListener('input',    () => threshVal.textContent    = thres
 minFramesSlider.addEventListener('input', () => minFramesVal.textContent = minFramesSlider.value);
 fpsSlider.addEventListener('input',       () => fpsVal.textContent       = fpsSlider.value);
 
+// ---- Mode tabs ----
+const tabAuto        = document.getElementById('tabAuto');
+const tabManual       = document.getElementById('tabManual');
+const sectionAuto     = document.getElementById('sectionAuto');
+const sectionManual   = document.getElementById('sectionManual');
+tabAuto.addEventListener('click', () => switchMode('auto'));
+tabManual.addEventListener('click', () => switchMode('manual'));
+function switchMode(mode) {
+  const isAuto = mode === 'auto';
+  tabAuto.classList.toggle('active', isAuto);
+  tabManual.classList.toggle('active', !isAuto);
+  sectionAuto.classList.toggle('active', isAuto);
+  sectionManual.classList.toggle('active', !isAuto);
+}
+
 let selectedFile = null;
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
@@ -213,7 +311,9 @@ function setFile(f) {
   selectedFile = f;
   fileChosen.textContent = f.name + '  (' + (f.size / 1024 / 1024).toFixed(1) + ' MB)';
   runBtn.disabled = false;
+  genFramesBtn.disabled = false;
   hideAll();
+  resetManual();
 }
 
 function getSettings() {
@@ -577,6 +677,239 @@ dlBtn.addEventListener('click', async () => {
   } finally {
     dlBtn.disabled = false;
     dlBtn.textContent = 'ZIPでダウンロード';
+  }
+});
+
+// =====================================================================
+// ---- MANUAL FRAME PICKER MODE ----
+// =====================================================================
+const manualIntervalSlider = document.getElementById('manualIntervalSlider');
+const manualIntervalVal    = document.getElementById('manualIntervalVal');
+const genFramesBtn         = document.getElementById('genFramesBtn');
+const manualProgressBox    = document.getElementById('manualProgressBox');
+const manualProgressFill   = document.getElementById('manualProgressFill');
+const manualProgressLabel  = document.getElementById('manualProgressLabel');
+const manualErrorBox       = document.getElementById('manualErrorBox');
+const manualToolbar        = document.getElementById('manualToolbar');
+const selCountNum          = document.getElementById('selCountNum');
+const totalFrameNum        = document.getElementById('totalFrameNum');
+const selectAllBtn         = document.getElementById('selectAllBtn');
+const clearSelBtn          = document.getElementById('clearSelBtn');
+const frameGrid            = document.getElementById('frameGrid');
+const manualEmpty          = document.getElementById('manualEmpty');
+const manualDlBtn          = document.getElementById('manualDlBtn');
+
+manualIntervalSlider.addEventListener('input', () => {
+  manualIntervalVal.textContent = Number(manualIntervalSlider.value).toFixed(1) + '秒';
+});
+
+// frames[i] = { time, blob(full-res JPEG blob, lazily created), dataURL(thumb), selected }
+let manualFrames = [];
+let manualBusy = false;
+
+function resetManual() {
+  manualFrames = [];
+  frameGrid.innerHTML = '';
+  frameGrid.classList.remove('visible');
+  manualToolbar.classList.remove('visible');
+  manualDlBtn.style.display = 'none';
+  manualEmpty.style.display = 'block';
+  manualEmpty.textContent = '動画を選択し、「フレーム一覧を生成」を押してください。';
+  manualErrorBox.classList.remove('visible');
+  manualProgressBox.classList.remove('visible');
+  updateSelCount();
+}
+
+function showManualError(msg) {
+  manualErrorBox.textContent = msg;
+  manualErrorBox.classList.add('visible');
+}
+
+function updateSelCount() {
+  const n = manualFrames.filter(f => f.selected).length;
+  selCountNum.textContent = n;
+  totalFrameNum.textContent = manualFrames.length;
+  manualDlBtn.style.display = n > 0 ? 'inline-block' : 'none';
+}
+
+genFramesBtn.addEventListener('click', async () => {
+  if (!selectedFile || manualBusy) return;
+  manualBusy = true;
+  genFramesBtn.disabled = true;
+  manualErrorBox.classList.remove('visible');
+  frameGrid.innerHTML = '';
+  frameGrid.classList.remove('visible');
+  manualToolbar.classList.remove('visible');
+  manualDlBtn.style.display = 'none';
+  manualEmpty.style.display = 'none';
+  manualFrames = [];
+  manualProgressBox.classList.add('visible');
+  manualProgressFill.style.width = '0%';
+  manualProgressLabel.textContent = '準備中';
+
+  const interval = Number(manualIntervalSlider.value);
+  const videoURL = URL.createObjectURL(selectedFile);
+
+  try {
+    const video = document.createElement('video');
+    video.src = videoURL;
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = 'metadata';
+
+    await new Promise((res, rej) => {
+      video.addEventListener('loadedmetadata', res, { once: true });
+      video.addEventListener('error', () => rej(new Error('動画を読み込めませんでした')), { once: true });
+      video.load();
+    });
+
+    const duration = video.duration;
+    const W = video.videoWidth  || 640;
+    const H = video.videoHeight || 360;
+    const SCALE = Math.min(1, 480 / W);
+    const CW = Math.round(W * SCALE);
+    const CH = Math.round(H * SCALE);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = CW; canvas.height = CH;
+    const ctx = canvas.getContext('2d');
+
+    const times = [];
+    for (let t = 0; t < duration; t += interval) times.push(t);
+    if (times.length === 0) times.push(0);
+
+    for (let i = 0; i < times.length; i++) {
+      const t = times[i];
+      await seekAndCapture(video, canvas, ctx, t);
+      const dataURL = canvas.toDataURL('image/jpeg', 0.55);
+      manualFrames.push({ time: t, dataURL, width: W, height: H, selected: false });
+
+      manualProgressLabel.textContent = `${i + 1}/${times.length}  (${t.toFixed(1)}s)`;
+      manualProgressFill.style.width = ((i + 1) / times.length * 100) + '%';
+      if (i % 5 === 0) await yieldFrame();
+    }
+
+    renderFrameGrid();
+    frameGrid.classList.add('visible');
+    manualToolbar.classList.add('visible');
+    updateSelCount();
+
+  } catch (e) {
+    showManualError('エラー: ' + e.message);
+    manualEmpty.style.display = 'block';
+    manualEmpty.textContent = '生成に失敗しました。';
+    console.error(e);
+  } finally {
+    URL.revokeObjectURL(videoURL);
+    manualProgressBox.classList.remove('visible');
+    genFramesBtn.disabled = false;
+    manualBusy = false;
+  }
+});
+
+function renderFrameGrid() {
+  frameGrid.innerHTML = '';
+  manualFrames.forEach((f, idx) => {
+    const div = document.createElement('div');
+    div.className = 'frame-item' + (f.selected ? ' selected' : '');
+    div.dataset.idx = idx;
+
+    const img = document.createElement('img');
+    img.src = f.dataURL;
+    img.alt = 'frame ' + idx;
+
+    const num = document.createElement('div');
+    num.className = 'frame-number';
+    num.textContent = '#' + String(idx + 1).padStart(3, '0');
+
+    const time = document.createElement('div');
+    time.className = 'frame-time';
+    time.textContent = f.time.toFixed(1) + 's';
+
+    const check = document.createElement('div');
+    check.className = 'frame-check';
+    check.textContent = '✓';
+
+    div.appendChild(img);
+    div.appendChild(num);
+    div.appendChild(time);
+    div.appendChild(check);
+
+    div.addEventListener('click', () => toggleFrame(idx, div));
+
+    frameGrid.appendChild(div);
+  });
+}
+
+function toggleFrame(idx, div) {
+  manualFrames[idx].selected = !manualFrames[idx].selected;
+  div.classList.toggle('selected', manualFrames[idx].selected);
+  updateSelCount();
+}
+
+selectAllBtn.addEventListener('click', () => {
+  manualFrames.forEach(f => f.selected = true);
+  [...frameGrid.children].forEach(el => el.classList.add('selected'));
+  updateSelCount();
+});
+clearSelBtn.addEventListener('click', () => {
+  manualFrames.forEach(f => f.selected = false);
+  [...frameGrid.children].forEach(el => el.classList.remove('selected'));
+  updateSelCount();
+});
+
+manualDlBtn.addEventListener('click', async () => {
+  const selected = manualFrames
+    .map((f, i) => ({ ...f, idx: i }))
+    .filter(f => f.selected);
+  if (selected.length === 0 || !selectedFile) return;
+
+  manualDlBtn.disabled = true;
+  manualDlBtn.textContent = 'ZIP作成中…';
+
+  const videoURL = URL.createObjectURL(selectedFile);
+  try {
+    const video = document.createElement('video');
+    video.src = videoURL;
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = 'metadata';
+
+    await new Promise((res, rej) => {
+      video.addEventListener('loadedmetadata', res, { once: true });
+      video.addEventListener('error', () => rej(new Error('動画を読み込めませんでした')), { once: true });
+      video.load();
+    });
+
+    const W = video.videoWidth  || 640;
+    const H = video.videoHeight || 360;
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = W; outCanvas.height = H;
+    const outCtx = outCanvas.getContext('2d');
+
+    const zip = new JSZip();
+    for (let i = 0; i < selected.length; i++) {
+      const f = selected[i];
+      manualDlBtn.textContent = `ZIP作成中… (${i + 1}/${selected.length})`;
+      await seekAndCapture(video, outCanvas, outCtx, f.time);
+      const blob = await canvasToBlob(outCanvas, 0.92);
+      const num = String(f.idx + 1).padStart(3, '0');
+      zip.file(`frame_${num}_t${f.time.toFixed(2)}s.jpg`, blob);
+      await yieldFrame();
+    }
+
+    const content = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(content);
+    a.download = (selectedFile.name.replace(/\.[^.]+$/, '')) + '_selected.zip';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } catch (e) {
+    showManualError('ZIP生成エラー: ' + e.message);
+  } finally {
+    URL.revokeObjectURL(videoURL);
+    manualDlBtn.disabled = false;
+    manualDlBtn.textContent = '選択したフレームをZIPでダウンロード';
   }
 });
 </script>
