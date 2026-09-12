@@ -1111,6 +1111,9 @@ runBtn.addEventListener('click', async () => {
 
     let slideCount = 0;
     let videoSegCount = 0;
+    // Video segments are kept separate from still runs. Their frames are
+    // owned exclusively by the video segment and never added as slides.
+    const videoSegStore = [];
 
     // Flush a completed still run → encode & emit thumb
     // Create a thumbnail from the current analysis canvas.
@@ -1161,18 +1164,40 @@ runBtn.addEventListener('click', async () => {
       return filename;
     }
 
-    // Flush a video segment → optionally encode 1 frame
+    // Flush a video segment. In "skip" mode it is counted internally but
+    // produces no output. In "one" mode, the user chooses representative
+    // frames from a modal; no video frame is added to extractedBlobs yet.
     async function flushVideoRun(vr) {
+      if (!vr || vr.frames.length === 0) return;
       videoSegCount++;
-      if (videoMode === 'skip') return;
+
+      if (videoMode !== 'one') return;
+
       const midTime = vr.frames[Math.floor(vr.frames.length / 2)];
       await seekAndCapture(video, canvas, ctx, midTime);
-      outCtx.drawImage(video, 0, 0, W, H);
-      const blob = await canvasToBlob(outCanvas, 0.92);
-      const num = String(extractedBlobs.length + 1).padStart(3, '0');
-      const filename = `video_seg_${num}_t${midTime.toFixed(2)}s.jpg`;
-      extractedBlobs.push({ blob, filename, type: 'video' });
-      addThumb(canvas, CW, CH, 'video', midTime);
+
+      const seg = {
+        segIdx: videoSegCount,
+        times: [...vr.frames],
+        thumbEls: []
+      };
+      videoSegStore.push(seg);
+
+      const thumbDiv = addThumb(canvas, CW, CH, 'video', midTime);
+      thumbDiv.classList.add('video-thumb');
+
+      const hint = document.createElement('div');
+      hint.className = 'video-edit-hint';
+      hint.textContent = 'タップして選択';
+      thumbDiv.appendChild(hint);
+
+      const badge = thumbDiv.querySelector('.thumb-badge');
+      badge.textContent = '未選択';
+      badge.style.background = 'rgba(232,160,32,0.25)';
+      badge.style.color = '#e8a020';
+
+      seg.thumbEls.push(thumbDiv);
+      thumbDiv.addEventListener('click', () => openModal(seg));
     }
 
     // ---- Frame-by-frame loop ----
