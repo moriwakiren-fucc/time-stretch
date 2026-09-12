@@ -1113,6 +1113,40 @@ runBtn.addEventListener('click', async () => {
     let videoSegCount = 0;
 
     // Flush a completed still run → encode & emit thumb
+    // Create a thumbnail from the current analysis canvas.
+    // The caller seeks the video before calling this function.
+    function addThumb(sourceCanvas, cw, ch, type, labelTime) {
+      const tc = document.createElement('canvas');
+      tc.width = cw;
+      tc.height = ch;
+      tc.getContext('2d').drawImage(sourceCanvas, 0, 0, cw, ch);
+      const dataURL = tc.toDataURL('image/jpeg', 0.45);
+      tc.width = 0;
+      tc.height = 0;
+
+      const div = document.createElement('div');
+      div.className = 'thumb-item';
+
+      const img = document.createElement('img');
+      img.src = dataURL;
+
+      const badge = document.createElement('div');
+      badge.className =
+        'thumb-badge ' +
+        (type === 'still' ? 'badge-still' : 'badge-video');
+      badge.textContent = type === 'still' ? 'slide' : 'video';
+
+      const lbl = document.createElement('div');
+      lbl.className = 'thumb-label';
+      lbl.textContent = labelTime.toFixed(1) + 's';
+
+      div.appendChild(img);
+      div.appendChild(badge);
+      div.appendChild(lbl);
+      thumbGrid.appendChild(div);
+      return div;
+    }
+
     async function flushStillRun(r) {
       if (r.count < minFrames) return null; // too short → treat as video below
       // Seek to best time and capture at full res
